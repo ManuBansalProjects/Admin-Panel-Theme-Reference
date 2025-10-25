@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <!-- <title>React App</title> -->
+  <title id="dynamicTitle"></title>
+  <link rel="icon" id="fav_icon" href="%PUBLIC_URL%/logoRound-1.png" />
+  <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0,width=device-width, user-scalable=no">
+
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <!-- icon links end -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link rel="stylesheet" href="%PUBLIC_URL%/assets/common/css/owl.carousel.min.css" />
+  <script src="%PUBLIC_URL%/assets/common/js/jquery.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/common/js/owl.carousel.min.js"></script>
+
+
+  <!-- ********* Admin Css ********* -->
+  <link rel="stylesheet" id="admin_style_1" href="%PUBLIC_URL%/assets/admin/web-fonts/icons.css" />
+  <link rel="stylesheet" id="admin_style_2"
+    href="%PUBLIC_URL%/assets/admin/web-fonts/font-awesome/font-awesome.min.css" />
+  <link rel="stylesheet" id="admin_style_3" href="%PUBLIC_URL%/assets/admin/web-fonts/plugin.css" />
+  <link rel="stylesheet" id="admin_style_4" href="%PUBLIC_URL%/assets/user/fonts/remixicon.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet"/>
+  <!-- ********* Admin Css ********* -->
+  <script src="%PUBLIC_URL%/assets/admin/ckeditor/ckeditor.js"></script>
+  <script>
+    window.CKEDITOR = CKEDITOR;
+  </script>
+  <script type="module">
+    const XLSX = await import("/assets/admin/js/xlsx.js");
+    document.XLSX = XLSX;
+  </script>
+</head>
+
+<body class="main-body leftmenu">
+  <div id="root"></div>
+</body>
+<!-- A Custome event for owl slider >>>>> -->
+<script>
+  document.addEventListener('createOWLSlider', function(event){
+    const { selector, settings = null } = event.detail;
+    const defaultSettings = {
+      loop: true,
+      margin: 10,
+      nav: true,
+      item:2,
+      responsive: {
+        0: {
+          items: 1
+        },
+        600: {
+          items: 3
+        },
+        1000: {
+          items: 5
+        }
+      }
+    };
+    $(selector).owlCarousel({
+      ...({...defaultSettings,...settings} || defaultSettings),
+      nav:true
+    });
+  });
+</script>
+<!-- A Custome event for owl slider <<<<< -->
+
+</html>

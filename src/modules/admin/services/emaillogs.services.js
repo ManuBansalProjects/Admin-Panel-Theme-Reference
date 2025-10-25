@@ -1,0 +1,17 @@
+import axiosInstance from "../../../utils/axios";
+import { ROLE } from "../../../utils/Constants";
+const options = {role: ROLE.SUPER_ADMIN};
+
+const path = "admin/email-logs";
+
+export const List = async (values) => {
+    return await axiosInstance(options).post(`${path}/list`, values);
+}
+
+export const ResendEmail = async (values) => {
+    return await axiosInstance(options).post(`${path}/resend-email`, values);
+}
+
+export const Details = async (id) => {
+    return await axiosInstance(options).get(`${path}/details?o_id=${id}`);
+}

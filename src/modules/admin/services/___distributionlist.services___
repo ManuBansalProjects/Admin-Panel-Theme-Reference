@@ -1,0 +1,47 @@
+import axiosInstance from "../../../utils/axios";
+
+const path = "admin/distribution-lists"
+
+export const DistributionList = async (values) => {
+    return await axiosInstance().post(`${path}/list`, values);
+}
+
+export const Add = async (values) => {
+    return await axiosInstance().post(`${path}/add`, values);
+}
+
+export const DistributionDetails = async (id) => {
+    return await axiosInstance().get(`${path}/details?o_id=${id}`);
+}
+
+export const Edit = async (values) => {
+    return await axiosInstance().post(`${path}/edit`, values);
+}
+
+export const DistributionStatus = async (values) => {
+    return await axiosInstance().post(`${path}/change-status`, values)
+}
+
+export const DistributionDelete = async (values) => {
+    return await axiosInstance().post(`${path}/delete`, values)
+}
+
+export const DistributionListUsers = async (values) => {
+    return await axiosInstance().post(`${path}/users/main-list`, values);
+}
+
+export const UsersAdd = async (values) => {
+    return await axiosInstance().post(`${path}/users/add`, values);
+}
+
+export const DistributionUsersList = async (values) => {
+    return await axiosInstance().post(`${path}/users/list`, values);
+}
+
+export const DistributionUsersDelete = async (values) => {
+    return await axiosInstance().post(`${path}/users/delete`, values)
+}
+
+export const DistributionUsersExcel = async (values) => {
+    return await axiosInstance().post(`${path}/users/read-excel`, values)
+}

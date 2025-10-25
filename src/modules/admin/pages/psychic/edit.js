@@ -1,0 +1,614 @@
+import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import Swal from "sweetalert2";
+import { useNavigate, useParams } from "react-router-dom";
+import Breadcrums from "../../common/breadcrumbs";
+import { SWAL_SETTINGS, PHONE_NO_LENGTH, INPUT_MAX_25, TEXTAREA_MAX_LENGTH, languageSpoken, EXPERTISE, INPUT_LENGTH_40, INPUT_LENGTH_50 } from "../../../../utils/Constants";
+import {
+  handleServerValidations,
+  DT,
+  globalLoader,
+  blockInvalidChar
+} from "../../../../utils/commonfunction";
+import * as Yup from "yup";
+import CustomError from "../../../../utils/customError";
+import { useTranslation } from "react-i18next";
+import { Details, Edit } from "../../services/psychic.services";
+import { cuisineOptions } from "../../../../utils/Constants";
+import { TagPicker, Tooltip, Whisper } from "rsuite";
+import PhoneInput from "../../../../utils/PhoneInput";
+import { COMMON_INPUT_VALIDATION, EMAIL_VALIDATION, NO_HTML_TAG, PHONE_VALIDATION } from "../../../../utils/commonValidations";
+
+
+const PsychicUserEdit = (props) => {
+  const navigate = useNavigate();
+  const params = useParams();
+  const { t } = useTranslation();
+  const [showdefault, setShowDefault] = useState({});
+  const [previewimage, setPreviewImage] = useState("");
+  const [saveType, setSaveType] = useState("");
+  const breadcrumbs = [
+    { title: t("link_dashboard"), url: "/admin/dashboard" },
+    {
+      title: t("link_psychic"),
+      url: "/admin/psychic-management/psychic/list/1",
+    },
+    { title: t("Edit"), url: "" },
+  ];
+
+  useEffect(() => {
+    Details(params.id)
+      .then((response) => {
+        setShowDefault(response && response.data ? response.data : []);
+        setPreviewImage(response?.data?.profile_image);
+      })
+      .catch((error) => {
+        console.log("error=====>", error);
+      });
+  }, [params.id]);
+
+
+  const validationSchema = Yup.object().shape({
+    first_name: Yup.string().trim()
+      .max(INPUT_LENGTH_40, DT(t("max_length_error_dynamic"), [INPUT_LENGTH_40]))
+      .concat(COMMON_INPUT_VALIDATION)
+      .required("First name is required"),
+    last_name: Yup.string().trim().max(INPUT_LENGTH_40, DT(t("max_length_error_dynamic"), [INPUT_LENGTH_40])).concat(COMMON_INPUT_VALIDATION).required("Last name is required"),
+    email: EMAIL_VALIDATION,
+    phone_number: PHONE_VALIDATION,
+    expertise: Yup.string().trim().required("Expertise is required"),
+    experience: Yup.number()
+      .min(0, "err_min_limit")
+      .max(100, "err_max_limit")
+      .required(t("err_experience_is_required")),
+    language_spoken: Yup.string().required("Language spoken is required"),
+    // credit_per_session: Yup.number().min(1, t("err_min_limit")).max(100000, t("err_max_limit")).required("err_credit_per_session"),
+    chat_credit_rate: Yup.number().min(1, t("err_min_limit")).max(100000000, t("err_max_limit")).required("err_chat_credit_rate"),
+    audio_credit_rate: Yup.number().min(1, t("err_min_limit")).max(100000000, t("err_max_limit")).required("err_audio_credit_rate"),
+    video_credit_rate: Yup.number().min(1, t("err_min_limit")).max(100000000, t("err_max_limit")).required("err_video_credit_rate"),
+    city: Yup.string().trim()
+      .max(INPUT_LENGTH_50, DT(t("max_length_error_dynamic"), [INPUT_LENGTH_50]))
+      .concat(COMMON_INPUT_VALIDATION)
+      .concat(NO_HTML_TAG)
+      .required(t("err_city_is_required")),
+    state: Yup.string().trim()
+      .max(INPUT_LENGTH_50, DT(t("max_length_error_dynamic"), [INPUT_LENGTH_50]))
+      .concat(COMMON_INPUT_VALIDATION)
+      .concat(NO_HTML_TAG)
+      .required(t("err_state_is_required")),
+    // country: Yup.string().trim()
+    //   .max(INPUT_LENGTH_50, DT(t("max_length_error_dynamic"), [INPUT_LENGTH_50]))
+    //   .concat(COMMON_INPUT_VALIDATION)
+    //   .concat(NO_HTML_TAG)
+    //   .required("Country is required"),
+    pin_code: Yup.string().trim().required("Pin Code is required").matches(/^[1-9]\d*$/, "err_pin_code_invalid"),
+    address: Yup.string().trim()
+      .max(TEXTAREA_MAX_LENGTH, DT(t("validation_max_input_characters"), [TEXTAREA_MAX_LENGTH]))
+      .concat(COMMON_INPUT_VALIDATION)
+      .concat(NO_HTML_TAG)
+      .required(t("label_location_error")),
+    profile_image: Yup.mixed()
+      .required(t('image_required_error'))
+      .nullable()
+      .test(
+        'fileOrUrl',
+        'supported_file_error',
+        value => {
+          if (!value) return true;
+          if (typeof value === 'string') return /^(http|https):\/\/[^\s$.?#].[^\s]*$/gm.test(value);
+          return ['image/jpg', 'image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(value.type);
+        }
+      )
+      .test(
+        'fileSize',
+        'image_max_size_error',
+        value => {
+          if (!value || typeof value === 'string') return true;
+          return value.size <= 1.5 * 1024 * 1024;
+        }
+      ),
+  });
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      first_name: showdefault && showdefault.first_name ? showdefault.first_name : "",
+      last_name: showdefault && showdefault.last_name ? showdefault.last_name : "",
+      email: showdefault && showdefault.email ? showdefault.email : "",
+      phone_number: showdefault && showdefault?.phone_number ? showdefault?.phone_number : "",
+      expertise: showdefault && showdefault.expertise ? showdefault.expertise : "",
+      experience: showdefault && showdefault.experience ? showdefault.experience : "",
+      language_spoken: showdefault && showdefault.language_spoken ? showdefault.language_spoken : "",
+      // credit_per_session: showdefault && showdefault.credit_per_session ? showdefault.credit_per_session : "",
+      chat_credit_rate: showdefault && showdefault.chat_credit_rate ? showdefault.chat_credit_rate : "",
+      audio_credit_rate: showdefault && showdefault.audio_credit_rate ? showdefault.audio_credit_rate : "",
+      video_credit_rate: showdefault && showdefault.video_credit_rate ? showdefault.video_credit_rate : "",
+      availability_hours: showdefault && showdefault.availability_hours ? showdefault.availability_hours : "",
+      city: showdefault && showdefault.city ? showdefault.city : "",
+      state: showdefault && showdefault.state ? showdefault.state : "",
+      // country: showdefault && showdefault.country ? showdefault.country : "",
+      pin_code: showdefault && showdefault.pin_code ? showdefault.pin_code : "",
+      address: showdefault && showdefault.address ? showdefault.address : "",
+      profile_image: showdefault && showdefault.profile_image ? showdefault.profile_image : "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values, { setSubmitting, resetForm }) => {
+      globalLoader(true);
+      let formData = new FormData();
+      formData.append("o_id", params.id);
+      formData.append("first_name", values.first_name);
+      formData.append("last_name", values.last_name);
+      formData.append("email", values.email);
+      formData.append("phone_number", values.phone_number);
+      formData.append("expertise", values.expertise);
+      formData.append("experience", values.experience);
+      formData.append("language_spoken", values.language_spoken);
+      // formData.append("credit_per_session", values.credit_per_session);
+      formData.append("chat_credit_rate", values.chat_credit_rate);
+      formData.append("audio_credit_rate", values.audio_credit_rate);
+      formData.append("video_credit_rate", values.video_credit_rate);
+      formData.append("availability_hours", values.availability_hours);
+      formData.append("city", values.city);
+      formData.append("state", values.state);
+      // formData.append("country", values.country);
+      formData.append("pin_code", values.pin_code);
+      formData.append("address", values.address);
+      formData.append("profile_image", values.profile_image);
+      Edit(formData)
+        .then((response) => {
+          setSubmitting(false);
+          if (response.success) {
+            Swal.fire({
+              icon: "success",
+              text: response.message,
+              ...SWAL_SETTINGS,
+            });
+            globalLoader(false);
+            if (saveType !== "Save") {
+              navigate(`/admin/psychic-management/psychic/list/1`);
+            }
+          } else {
+            Swal.fire({
+              icon: "error",
+              text: handleServerValidations(response),
+              ...SWAL_SETTINGS,
+            });
+          }
+          globalLoader(false);
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            text: handleServerValidations(error),
+            ...SWAL_SETTINGS,
+          });
+          console.log("error ====> ", error);
+        });
+    },
+  });
+
+  return (
+    <>
+      <Breadcrums data={breadcrumbs} />
+      <form onSubmit={formik.handleSubmit}>
+        <div className="row row-sm">
+          <div className="col-lg-12 col-md-12 animation_fade">
+            <div className="card custom-card">
+              <div className="card-body">
+                <div>
+                  <h6 className="main-content-label mb-3">
+                    {t("Edit Psychic")}
+                  </h6>
+                </div>
+                <div className="row row-sm">
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="first_name" className="text-left d-flex">
+                      {t("First name")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="first_name"
+                      id="first_name"
+                      type="text"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.first_name}
+                      className="form-control"
+                      placeholder={t("Enter first name")}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError shortCodes={[INPUT_MAX_25]} name="first_name" form={formik} />
+                    </span>
+                  </div>
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="last_name" className="text-left d-flex">
+                      {t("Last name")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="last_name"
+                      id="last_name"
+                      type="text"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.last_name}
+                      className="form-control"
+                      placeholder={t("Enter last name")}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError shortCodes={[INPUT_MAX_25]} name="last_name" form={formik} />
+                    </span>
+                  </div>
+                  <div className="col-lg-6 text-center form-group">
+                    <label htmlFor="email" className="text-left d-flex">
+                      {t("label_email")}:<span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="email"
+                      id="email"
+                      type="email"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.email}
+                      className="form-control"
+                      placeholder={t("placeholder_email")}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="email" form={formik} />
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label className="text-left d-flex" htmlFor="phone_number">
+                      {t("label_phone_number")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <PhoneInput
+                      name="phone_number"
+                      id="phone_number"
+                      placeholder={t('placeholder_phone_number')}
+                      onChange={(e) => { formik.setFieldValue('phone_number', e?.phone_number) }}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.phone_number}
+                      className="form-control"
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="phone_number" form={formik} shortCodes={{ PHONE_MIN_LENGTH: PHONE_NO_LENGTH.min, PHONE_MAX_LENGTH: PHONE_NO_LENGTH.max }} />
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="expertise" className="text-left d-flex">
+                      {t("Expertise Area")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <div className=" select-down-arrow">
+                      <select
+                        name="expertise"
+                        id="expertise"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.expertise}
+                        className="form-control" >
+                        {(EXPERTISE).map((exp, i) => {
+                          return (
+                            <option key={i} value={exp.value}>{t(`${exp.name}`)}</option>
+                          )
+                        })}
+                      </select>
+                      <span className="text-danger d-flex text-left">
+                        <CustomError name="expertise" form={formik} />
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="experience" className="text-left d-flex">
+                      {t("Experience (Year) ")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <div className="input-group">
+                      <input
+                        name="experience"
+                        id="experience"
+                        type="number"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.experience}
+                        className="form-control"
+                        placeholder={t("Enter experience")}
+                      />
+                      <span className="input-group-text">Year</span>
+                    </div>
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="experience" form={formik} />
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="language_spoken" className="text-left d-flex">
+                      {t("Language spoken")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <div className=" select-down-arrow">
+                      <select
+                        name="language_spoken"
+                        id="language_spoken"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.language_spoken}
+                        className="form-control" >
+                        {(languageSpoken).map((value, i) => {
+                          return (
+                            <option key={i} value={value.code}>{t(`${value.name}`)}</option>
+                          )
+                        })}
+                      </select>
+                    </div>
+                    {/* <span className="text-danger d-flex text-left">
+                                        {errors.language_spoken && touched.language_spoken && errors.language_spoken}
+                                      </span> */}
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="language_spoken" form={formik} />
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="chat_credit_rate" className="text-left d-flex">
+                      {t("Chat Credit Rate")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="chat_credit_rate"
+                      id="chat_credit_rate"
+                      type="number"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.chat_credit_rate}
+                      className="form-control"
+                      placeholder={t("Enter chat credit rate")}
+                      onKeyDown={blockInvalidChar}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="chat_credit_rate" form={formik} />
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="audio_credit_rate" className="text-left d-flex">
+                      {t("Audio Credit Rate")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="audio_credit_rate"
+                      id="audio_credit_rate"
+                      type="number"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.audio_credit_rate}
+                      className="form-control"
+                      placeholder={t("Enter audio credit rate")}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="audio_credit_rate" form={formik} />
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="video_credit_rate" className="text-left d-flex">
+                      {t("Video Credit Rate")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="video_credit_rate"
+                      id="video_credit_rate"
+                      type="number"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.video_credit_rate}
+                      className="form-control"
+                      placeholder={t("Enter video credit rate")}
+                      onKeyDown={blockInvalidChar}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="video_credit_rate" form={formik} />
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="city" className="text-left d-flex">
+                      {t("City")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="city"
+                      id="city"
+                      type="text"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.city}
+                      className="form-control"
+                      placeholder={t("Enter city")}
+                      onKeyDown={blockInvalidChar}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="city" form={formik} />
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="state" className="text-left d-flex">
+                      {t("State")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="state"
+                      id="state"
+                      type="text"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.state}
+                      className="form-control"
+                      placeholder={t("Enter state")}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="state" form={formik} />
+                    </span>
+                  </div>
+
+                  {/* <div className="col-md-6 text-center form-group">
+                    <label htmlFor="country" className="text-left d-flex">
+                      {t("Country")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="country"
+                      id="country"
+                      type="text"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.country}
+                      className="form-control"
+                      placeholder={t("Enter country")}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="country" form={formik} />
+                    </span>
+                  </div> */}
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="pin_code" className="text-left d-flex">
+                      {t("Pin code")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="pin_code"
+                      id="pin_code"
+                      type="number"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.pin_code}
+                      className="form-control"
+                      placeholder={t("Enter pin code")}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="pin_code" form={formik} />
+                    </span>
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="address" className="text-left d-flex">
+                      {t("label_address")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <input
+                      name="address"
+                      id="address"
+                      type="text"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.address}
+                      className="form-control"
+                      placeholder={t("placeholder_address")}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError shortCodes={[TEXTAREA_MAX_LENGTH]} name="address" form={formik} />
+                    </span>
+                  </div>
+
+                  <div className="col-lg-6 text-center form-group">
+                    <label htmlFor="restaurant_logo" className="text-left d-flex">
+                      {t("label_logo")}:
+                      {" "}
+                      <Whisper
+                        placement="top"
+                        controlId="control-id-hover"
+                        trigger="hover"
+                        speaker={
+                          <Tooltip>
+                            {t("image_support_tooltip")}
+                          </Tooltip>
+                        }
+                      >
+                        <span className="field-more-info mt-1 ms-1 cp">
+                          ?
+                        </span>
+                      </Whisper>
+                    </label>
+                    <input
+                      className="form-control imgInput"
+                      id="profile_image"
+                      name="profile_image"
+                      accept="image/*"
+                      type="file"
+                      onChange={(event) => {
+                        formik.setFieldValue(
+                          "profile_image",
+                          event.target.files[0] || ""
+                        );
+                        event.target.files.length === 1
+                          ? setPreviewImage(
+                            URL.createObjectURL(event.target.files[0])
+                          )
+                          : setPreviewImage("");
+                      }}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="profile_image" form={formik} />
+                    </span>
+                    {previewimage ? (
+                      <ul className="question-image-preview questions-ul">
+                        <li className="pr_img_box">
+                          <img
+                            src={previewimage}
+                            style={{ height: "100px" }}
+                            alt={"profileImg"}
+                          />
+                        </li>
+                      </ul>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  <div className="mt-5">
+                    <button
+                      onClick={() => {
+                        setSaveType("Save");
+                      }}
+                      className="btn btn-info mr-2"
+                      type="submit"
+                    >
+                      <i className="ace-icon fa fa-check bigger-110 mx-1"></i>
+                      {t("btn_save")}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSaveType("");
+                      }}
+                      className="btn btn-success mr-2"
+                      type="submit"
+                    >
+                      <i className="ace-icon fa fa-check bigger-110 mx-1"></i>
+                      {t("btn_save_exit")}
+                    </button>
+                    <button
+                      className="btn ripple btn-secondary"
+                      type="button"
+                      onClick={() => navigate(-1)}
+                    >
+                      <i className="ace-icon fa fa-times bigger-110 mx-1"></i>
+                      {t("btn_cancel")}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </>
+  );
+};
+
+export default PsychicUserEdit;
