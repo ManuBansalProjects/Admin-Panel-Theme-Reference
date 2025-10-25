@@ -137,7 +137,7 @@ const UserAdd = (props) => {
             });
             globalLoader(false);
             resetForm({ values: "" });
-            navigate(`/admin/psychic-management/psychic/list/1`);
+            navigate(`/admin/user-management/user/list/1`);
           } else {
             Swal.fire({
               icon: "error",
