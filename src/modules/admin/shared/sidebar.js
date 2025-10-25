@@ -59,6 +59,8 @@ const SideBar = () => {
       {/* Dashboard section start */}
       <div className="main-sidebar-body">
         <ul className="nav">
+
+          {/* Dashboard section start */}
           <li
             className={
               "nav-item" +
@@ -92,93 +94,9 @@ const SideBar = () => {
               </span>
             </Link>
           </li>
-
           {/* user section end */}
 
-          {/* Psychic section start */}
-          {/* <li className={
-            `nav-item ` +
-            (loc.pathname.includes("/admin/psychic-management")
-              ? "show active"
-              : "")
-          } >
-            <Link className="nav-link" to="/admin/psychic-management/psychic/list/1">
-              <span className="shape1"></span>
-              <span className="shape2"></span>
-              <i className="fas fa-user-astronaut sidemenu-icon"></i>
-              <span className="sidemenu-label">
-                {t("sidebar_link_psychic")}
-              </span>
-            </Link>
-          </li> */}
-          {/* Psychic section end */}
-
-          {/* Transaction section start */}
-          {/* <li className={
-            `nav-item ` +
-            (loc.pathname.includes("/admin/transaction")
-              ? "show active"
-              : "")
-          } >
-            <Link className="nav-link" to="/admin/transaction/list/1">
-              <span className="shape1"></span>
-              <span className="shape2"></span>
-              <i className="fas fa-exchange-alt sidemenu-icon"></i>
-              <span className="sidemenu-label">
-                {t("Transaction")}
-              </span>
-            </Link>
-          </li> */}
-
-          {/* <li
-            className={
-              `nav-item ` +
-              (loc.pathname.includes("/payable-transaction") || loc.pathname.includes("/payout-transaction")
-                ? "show active"
-                : "")
-            }
-          >
-            <a
-              className="nav-link with-sub submenu"
-              onClick={toggleDropdown}
-              href={"/"}
-            >
-              <span className="shape1"></span>
-              <span className="shape2"></span>
-              <i className="fa fa-money-bill-wave sidemenu-icon"></i>
-              <span className="sidemenu-label">{t("Transaction")}</span>
-              <i className="angle fe fe-chevron-right"></i>
-            </a>
-            <ul className="nav-sub">
-              <li
-                className={`nav-sub-item ${loc.pathname.includes("/payable-transaction") ? "active" : ""
-                  }`}
-              >
-                <Link
-                  className="nav-sub-link"
-                  to={`/admin/payable-transaction/list/1`}
-                >
-                  Payable transaction
-                </Link>
-              </li>
-              <li
-                className={`nav-sub-item ${loc.pathname.includes("/payout-transaction") ? "active" : ""
-                  }`}
-              >
-                <Link
-                  className="nav-sub-link"
-                  to={`/admin/payout-transaction/list/1`}
-                >
-                  Payout Transaction
-                </Link>
-              </li>
-            </ul>
-          </li> */}
-
-          {/* Transaction section end */}
-
-          {/* Cms section start */}
-          {/* {hasPermission("/admin/cms") ? ( */}
+          {/* Cms section starts */}
           <li
             className={
               `nav-item ` +
@@ -208,7 +126,8 @@ const SideBar = () => {
                   {t("sidebar_link_pages")}
                 </Link>
               </li>
-              <li
+              
+              {/* <li
                 className={`nav-sub-item ${loc.pathname.includes("/cms/question") ? " active" : ""
                   }`}
               >
@@ -218,7 +137,8 @@ const SideBar = () => {
                 >
                   {t("Questions")}
                 </Link>
-              </li>
+              </li> */}
+
               <li
                 className={`nav-sub-item ${loc.pathname.includes("/cms/faq") ? " active" : ""
                   }`}
@@ -230,7 +150,8 @@ const SideBar = () => {
                   FAQ
                 </Link>
               </li>
-              <li
+
+              {/* <li
                 className={`nav-sub-item ${loc.pathname.includes("/cms/services") ? " active" : ""
                   }`}
               >
@@ -240,7 +161,8 @@ const SideBar = () => {
                 >
                   Services
                 </Link>
-              </li>
+              </li> */}
+
               <li
                 className={
                   "nav-sub-item" +
@@ -257,7 +179,7 @@ const SideBar = () => {
                 </Link>
               </li>
 
-              <li
+              {/* <li
                 className={
                   "nav-sub-item" +
                   (loc.pathname.includes("/cms/web-home") ? " active" : "")
@@ -266,9 +188,9 @@ const SideBar = () => {
                 <Link className="nav-sub-link" to={`/admin/cms/web-home`}>
                   {t("Website Home")}
                 </Link>
-              </li>
+              </li> */}
 
-              <li
+              {/* <li
                 className={
                   "nav-sub-item" +
                   (loc.pathname.includes("/cms/about-us") ? " active" : "")
@@ -277,26 +199,14 @@ const SideBar = () => {
                 <Link className="nav-sub-link" to={`/admin/cms/about-us`}>
                   {t("About Us")}
                 </Link>
-              </li>
+              </li> */}
 
-              <li
-                className={
-                  "nav-sub-item" +
-                  (loc.pathname.includes("/cms/settings") ? " active" : "")
-                }
-              >
-                <Link className="nav-sub-link" to={`/admin/cms/settings`}>
-                  {t("sidebar_link_global_settings")}
-                </Link>
-              </li>
             </ul>
           </li>
-          {/* // ) : null} */}
           {/* Cms section end */}
 
           {/* subscription section start */}
-
-          <li
+          {/* <li
             className={
               `nav-item ` +
               (loc.pathname.includes("/admin/subscription") ? "show active" : "")
@@ -314,28 +224,7 @@ const SideBar = () => {
               <i className="angle fe fe-chevron-right"></i>
             </a>
             <ul className="nav-sub">
-              {/* <li
-                className={`nav-sub-item ${loc.pathname.includes("/subscription/subscription-feature") ? " active" : ""
-                  }`}
-              >
-                <Link
-                  className="nav-sub-link"
-                  to={`subscription/subscription-feature`}
-                >
-                  Subscription Features
-                </Link>
-              </li>
-              <li
-                className={`nav-sub-item ${loc.pathname.includes("/subscription/subscription-benefit") ? " active" : ""
-                  }`}
-              >
-                <Link
-                  className="nav-sub-link"
-                  to={`subscription/subscription-benefit`}
-                >
-                  Subscription Benefits
-                </Link>
-              </li> */}
+             
               <li
                 className={`nav-sub-item ${loc.pathname.includes("/subscription/subscription-plan") ? " active" : ""
                   }`}
@@ -373,79 +262,12 @@ const SideBar = () => {
               </li>
 
             </ul>
-          </li>
-
+          </li> */}
           {/* subscription section end */}
 
-          {/* testimonial management section end */}
-          {/* <li
-              className={
-                `nav-item ` +
-                (loc.pathname.includes("/testimonial-management")
-                  ? "show active"
-                  : "")
-              }
-            >
-              <Link
-                className="nav-link"
-                to={`/admin/testimonial-management/testimonial/list/${1}`}
-              >
-                <span className="shape1"></span>
-                <span className="shape2"></span>
-                <i className="fa fa-comment-dots sidemenu-icon"></i>
-                <span className="sidemenu-label">
-                {t("sidebar_link_testimonials")}
-                </span>
-              </Link>
-            </li> */}
-          {/* testimonial management section end */}
-
-          {/* <li
-            className={
-              `nav-item ` +
-              (loc.pathname.includes("/inquiry")
-                ? "show active"
-                : "")
-            }
-          >
-            <Link
-              className="nav-link"
-              to={`/admin/inquiry/list/${1}`}
-            >
-              <span className="shape1"></span>
-              <span className="shape2"></span>
-              <i className="fas fa-question-circle sidemenu-icon"></i>
-              <span className="sidemenu-label">
-                {t("Advisor Inquiry")}
-              </span>
-            </Link>
-          </li> */}
-
-          {/*  Contact Us section  */}
-          {/* <li
-            className={
-              `nav-item ` +
-              (loc.pathname.includes("/contact-us")
-                ? "show active"
-                : "")
-            }
-          >
-            <Link
-              className="nav-link"
-              to={`/admin/contact-us/list/${1}`}
-            >
-              <span className="shape1"></span>
-              <span className="shape2"></span>
-              <i className="fas fa-address-card sidemenu-icon"></i>
-              <span className="sidemenu-label">
-                {t("sidebar_link_contact_us")}
-              </span>
-            </Link>
-          </li> */}
-          {/*  Contact Us section end */}
 
           {/* Coupon */}
-          <li
+          {/* <li
             className={
               `nav-item ` +
               (loc.pathname.includes("/coupon")
@@ -461,14 +283,13 @@ const SideBar = () => {
               <span className="shape2"></span>
               <i className="fas fa-address-card sidemenu-icon"></i>
               <span className="sidemenu-label">
-                {/* {t("sidebar_link_contact_us")} */}
                 Coupons
               </span>
             </Link>
-          </li>
+          </li> */}
 
           {/* Referrals */}
-          <li
+          {/* <li
             className={
               `nav-item ` +
               (loc.pathname.includes("/admin/referrals") ? "show active" : "")
@@ -512,31 +333,25 @@ const SideBar = () => {
               </li>
 
             </ul>
-          </li>
+          </li> */}
 
-
-           {/*  Questionnaire stats sart  */}
-          {/* <li
-            className={
-              `nav-item ` +
-              (loc.pathname.includes("/questionnaire-stats")
-                ? "show active"
-                : "")
-            }
-          >
-            <Link
-              className="nav-link"
-              to={`/admin/questionnaire-stats`}
-            >
+          {/* Global setings start */}
+          <li className={
+            `nav-item ` +
+            (loc.pathname.includes("/admin/global-settings")
+              ? "show active"
+              : "")
+          } >
+            <Link className="nav-link" to="/admin/global-settings">
               <span className="shape1"></span>
               <span className="shape2"></span>
-              <i class="fas fa-chart-bar sidemenu-icon"></i>
+              <i className="fa fa-user-tie sidemenu-icon"></i>
               <span className="sidemenu-label">
-                {t("Questionnaire stats")}
+                Global Settings
               </span>
             </Link>
-          </li> */}
-          {/*  Questionnaire stats end */}
+          </li>
+          {/* Global settings end */}
 
         </ul>
       </div>

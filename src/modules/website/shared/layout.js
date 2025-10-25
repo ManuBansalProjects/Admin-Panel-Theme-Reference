@@ -60,11 +60,11 @@ function WebsiteLayout() {
         <a href="#website-main-section" className="skip-link">
             {t("skip_to_main_content")}
         </a>
-      <WebsiteHeader />
+      {/* <WebsiteHeader /> */}
       <div className="inner-wraper">
         <Outlet />
       </div>
-      <WebsiteFooter />
+      {/* <WebsiteFooter /> */}
     </div>
   );
 }

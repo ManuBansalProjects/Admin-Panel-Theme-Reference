@@ -540,6 +540,12 @@ const router = createBrowserRouter([
         path: "referrals/history/list/:pgno",
         element: <PrivateRoute component={AddCoupon} />,
       },
+
+      //Global settings
+      {
+        path: "global-settings",
+        element: <PrivateRoute component={GlobalSettings} />,
+      },
     ],
   },
   {
