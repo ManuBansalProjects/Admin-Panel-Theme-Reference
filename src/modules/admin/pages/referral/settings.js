@@ -11,7 +11,8 @@ import { earningType, SWAL_SETTINGS } from "../../../../utils/Constants";
 import Loader from "../../common/loader";
 import { URL_REGEX, amountRegex, MOBILE_NUMBER_REGEX } from "../../../../utils/Constants";
 import { useTranslation } from "react-i18next";
-import { Tooltip, Whisper } from "rsuite";
+import { Toggle, Tooltip, Whisper } from "rsuite";
+import "rsuite/dist/rsuite.min.css";
 
 const ReferralSettings = (props) => {
   const { t } = useTranslation();
@@ -77,7 +78,7 @@ const ReferralSettings = (props) => {
           }}
           validate={(values) => {
 
-            let error = { socialMedia: [] };
+            let error = {};
             // { console.log("values--",values.Address)}
 
             if(!values?.earning_type){
@@ -144,28 +145,25 @@ const ReferralSettings = (props) => {
                 <div className="col-lg-12 col-md-12 animation_fade">
                   <div className="card custom-card">
                     <div className="card-body">
-                      {/* <div>
-                        <h6 className="main-content-label mb-3">
-                          {t("sidebar_link_global_settings")}
-                        </h6>
-                      </div> */}
+                      
                       <div className="row row-sm">
-
-                        <div>
-                            <input 
-                              className="form-check-input" 
-                              type="checkbox" 
-                              id="status" 
-                              name="status" 
-                              onBlur={handleBlur} 
-                              checked={values.status}
-                              onChange={(e) => {
-                                setFieldValue('status', e.target.checked);
-                                ChangeStatus(e.target.checked);
-                              }} 
-                            />
-                            <label className="form-check-label" for="status"></label>
+                        
+                         <div className="mb-3">
+                          <label htmlFor="earning_type" className="text-left d-flex">
+                            Status:
+                            <span className="requirestar">*</span>{" "}
+                          </label>
+                          <Toggle
+                            checked={values.status}
+                            onChange={(value) => {
+                              setFieldValue('status', value);
+                              ChangeStatus(value);
+                            }}
+                            checkedChildren="ON"
+                            unCheckedChildren="OFF"
+                          />
                         </div>
+
 
                         <div className="col-md-6 text-center form-group">
                           <label htmlFor="earning_type" className="text-left d-flex">

@@ -607,6 +607,7 @@ const GlobalSettings = (props) => {
                           )}
                         </div>
 
+                        {/*   
                          <div className="col-md-6 text-center form-group">
                           <label
                             htmlFor="credit_value"
@@ -637,9 +638,9 @@ const GlobalSettings = (props) => {
                               touched.credit_value &&
                               errors.credit_value}
                           </span>
-                        </div>
+                        </div> */}
 
-                        <div className="col-md-6 text-center form-group">
+                        {/* <div className="col-md-6 text-center form-group">
                           <label htmlFor="wallet_recharge_status" className="text-left d-flex">
                             {t("Wallet recharge status")}:
                             <span className="requirestar">*</span>
@@ -662,7 +663,7 @@ const GlobalSettings = (props) => {
                               touched.wallet_recharge_status &&
                               errors.wallet_recharge_status}
                           </span>
-                        </div>
+                        </div> */}
 
 
                         {/*<div className="col-md-12 text-center form-group">
