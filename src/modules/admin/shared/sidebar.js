@@ -289,7 +289,7 @@ const SideBar = () => {
           </li> */}
 
           {/* Referrals */}
-          <li
+          {/* <li
             className={
               `nav-item ` +
               (loc.pathname.includes("/admin/referrals") ? "show active" : "")
@@ -333,7 +333,7 @@ const SideBar = () => {
               </li>
 
             </ul>
-          </li>
+          </li> */}
 
           {/* Global setings start */}
           <li className={
