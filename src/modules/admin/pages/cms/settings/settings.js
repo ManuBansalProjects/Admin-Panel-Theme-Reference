@@ -85,8 +85,8 @@ const GlobalSettings = (props) => {
             title: showdefault && showdefault.title ? showdefault.title : "",
             website_info: showdefault && showdefault.website_info ? showdefault.website_info : "",
             website_logo: showdefault && showdefault.website_logo ? showdefault.website_logo : "",
-            credit_value: showdefault && showdefault.credit_value ? showdefault.credit_value : "",
-            wallet_recharge_status: showdefault && showdefault.wallet_recharge_status ? showdefault.wallet_recharge_status : "false",
+            // credit_value: showdefault && showdefault.credit_value ? showdefault.credit_value : "",
+            // wallet_recharge_status: showdefault && showdefault.wallet_recharge_status ? showdefault.wallet_recharge_status : "false",
             // monthly_restaurant_enrollment_cost: showdefault && showdefault.monthly_restaurant_enrollment_cost ?
             //   showdefault.monthly_restaurant_enrollment_cost :
             //   "",
@@ -188,11 +188,11 @@ const GlobalSettings = (props) => {
               error.Address = t("validation_err_reached_maximum_length")
             }
 
-            if(!values?.credit_value){
-              error.credit_value = "Credit value is required"
-            }else if(values?.credit_value < 0 || values?.credit_value > 100000000){
-              error.credit_value = "Credit value should be between 0 to 100000000"
-            }
+            // if(!values?.credit_value){
+            //   error.credit_value = "Credit value is required"
+            // }else if(values?.credit_value < 0 || values?.credit_value > 100000000){
+            //   error.credit_value = "Credit value should be between 0 to 100000000"
+            // }
 
             if (!values.web.trim()) {
               error.web = t("website_error");
@@ -268,8 +268,8 @@ const GlobalSettings = (props) => {
             formData.append("title", values.title);
             formData.append("website_info", values.website_info);
             formData.append("website_logo", values.website_logo);
-            formData.append("credit_value", values.credit_value);
-            formData.append("wallet_recharge_status", values.wallet_recharge_status);
+            // formData.append("credit_value", values.credit_value);
+            // formData.append("wallet_recharge_status", values.wallet_recharge_status);
             // formData.append("monthly_restaurant_enrollment_cost", values.monthly_restaurant_enrollment_cost);
             // formData.append("yearly_restaurant_enrollment_cost", values.yearly_restaurant_enrollment_cost);
             // console.log("formData--->",formData)
