@@ -113,6 +113,7 @@ import ViewTransaction from "./modules/admin/pages/transaction/view";
 import UserSubscriptionHistoryTable from "./modules/admin/pages/user/user-subscription-history";
 import UserSubscriptionHistoryDetails from "./modules/admin/pages/user/user-subscription-details";
 import ReferralSettings from "./modules/admin/pages/referral/settings";
+import AstroGPT from "./modules/admin/pages/Testing/astrogpt";
 
 
 const router = createBrowserRouter([
@@ -545,6 +546,11 @@ const router = createBrowserRouter([
       {
         path: "global-settings",
         element: <PrivateRoute component={GlobalSettings} />,
+      },
+      //AstroGPT
+      {
+        path: "astrogpt",
+        element: <PrivateRoute component={AstroGPT} />,
       },
     ],
   },

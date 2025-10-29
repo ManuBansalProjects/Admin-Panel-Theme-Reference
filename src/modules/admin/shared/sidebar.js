@@ -353,6 +353,23 @@ const SideBar = () => {
           </li>
           {/* Global settings end */}
 
+          {/* dummy astroGPT START*/}
+          <li className={
+            `nav-item ` +
+            (loc.pathname.includes("/admin/astrogpt")
+              ? "show active"
+              : "")
+          } >
+            <Link className="nav-link" to="/admin/astrogpt">
+              <span className="shape1"></span>
+              <span className="shape2"></span>
+              <i className="fa fa-user-tie sidemenu-icon"></i>
+              <span className="sidemenu-label">
+                AstroGPT Testing
+              </span>
+            </Link>
+          </li>
+          {/* dummy astroGPT END */}
         </ul>
       </div>
     </div>
