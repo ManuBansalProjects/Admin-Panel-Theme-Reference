@@ -21,6 +21,8 @@ const AstroGPT = (props) => {
   const [submitted, setSubmitted] = useState(false);
   
   const [conversations, setConversations] = useState([]);
+  // const [latestResponse, setLatestResponse] = useState("");
+  // const [isStreamingInProgess, setIsStreamingInProgress] = useState(false);
 
   const breadcrumbs = [
     { title: t("sidebar_link_dashboard"), url: "/admin/dashboard" },
@@ -50,10 +52,10 @@ const AstroGPT = (props) => {
       setConversations(prevConversations => updatedConversations);
       resetForm({ values: "" });
 
+      // handleAsk(updatedConversations); //using streaming
 
       let formData = new FormData();
       formData.append("conversations", JSON.stringify(updatedConversations));
-
       ThirdPartyServices
         .AstroGPTQuery(formData)
         .then((response) => {
@@ -80,6 +82,62 @@ const AstroGPT = (props) => {
     },
   });
 
+  // const handleAsk = async (conversations) => {
+
+  //   const accessToken = JSON.parse(localStorage.getItem('super_admin')).token;
+  //   const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/third-party/astrogpt-query`, {
+  //     method: "POST",
+  //     headers: { 
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${accessToken}` 
+  //     },
+  //     body: JSON.stringify({ conversations }),
+  //   });
+
+  //   if (!response.body) {
+  //     console.error("No response stream");
+  //     globalLoader(false);
+  //     setSubmitted(false);
+  //     return;
+  //   }
+
+  //   const reader = response.body.getReader();
+  //   const decoder = new TextDecoder("utf-8");
+
+  //   let firstIteration = true;
+  //   let assistantResponse = '';
+
+  //   while (true) {
+  //     const { value, done } = await reader.read();
+  //     if (done) break;
+  //     const chunk = decoder.decode(value, { stream: true });
+  //     console.log(chunk, '======chunk');
+  //     const partialResponseSplitted = chunk.split('\n').filter(line => line.startsWith('data: ')).map(line =>{
+  //       line = line.replace(/^data: /, "").trim()
+  //       return line == '[DONE]' ? '' : `${line}`;
+  //     })
+  //     const partialResponse = partialResponseSplitted.join(' ');
+  //     console.log(partialResponse, '======partial response');
+
+  //     if(firstIteration){
+  //       globalLoader(false);
+  //       setSubmitted(false);
+  //       setIsStreamingInProgress(true);
+  //     }
+  //     firstIteration = false;
+
+  //     setLatestResponse((prev) => `${prev}${prev.length ? ' ' : ''}${partialResponse}`);
+  //     assistantResponse += `${assistantResponse.length ? ' ' : ''}${partialResponse}`;
+  //   }
+
+  //   setIsStreamingInProgress(false);
+  //   setConversations(prevConversations => [
+  //       ...prevConversations,
+  //       {content: assistantResponse, role: 'assistant'}
+  //   ])    
+  //   setLatestResponse('');
+  // };
+
   return (
     <>
       <Breadcrums data={breadcrumbs} />
@@ -87,30 +145,50 @@ const AstroGPT = (props) => {
         {conversations.map((message, index) => {
             const isAssistant = message.role === "assistant";
             return (
-            <div
-                key={index}
-                className={`d-flex mb-3 ${
-                isAssistant ? "justify-content-start" : "justify-content-end"
-                }`}
-            >
-                <div
-                className={`p-3 rounded-4 shadow-sm ${
-                    isAssistant
-                    ? "bg-grey text-white rounded-start-0"
-                    : "bg-primary text-white rounded-end-0"
-                }`}
-                style={{ maxWidth: "75%" }}
-                >
-                <small className="fw-bold text-uppercase d-block mb-1 opacity-75">
-                    {message.role}
-                </small>
-                <p className="mb-0" style={{ whiteSpace: "pre-wrap" }}>
-                    {message.content}
-                </p>
-                </div>
-            </div>
+              <div
+                  key={index}
+                  className={`d-flex mb-3 ${
+                  isAssistant ? "justify-content-start" : "justify-content-end"
+                  }`}
+              >
+                  <div
+                    className={`p-3 rounded-4 shadow-sm ${
+                        isAssistant
+                        ? "bg-grey text-white rounded-start-0"
+                        : "bg-primary text-white rounded-end-0"
+                    }`}
+                    style={{ maxWidth: "75%" }}
+                  >
+                    <small className="fw-bold text-uppercase d-block mb-1 opacity-75">
+                        {message.role}
+                    </small>
+                    <p className="mb-0" style={{ whiteSpace: "pre-wrap" }}>
+                        {message.content}
+                    </p>
+                  </div>
+              </div>
             );
         })}
+        {/* {
+          isStreamingInProgess 
+          ?
+            <div
+              className={`d-flex mb-3 "justify-content-start"`}
+            >
+              <div
+                className={`p-3 rounded-4 shadow-sm "bg-grey text-white rounded-start-0"}`}
+                style={{ maxWidth: "75%" }}
+              >
+                <small className="fw-bold text-uppercase d-block mb-1 opacity-75">
+                    assistant
+                </small>
+                <p className="mb-0" style={{ whiteSpace: "pre-wrap" }}>
+                    {latestResponse}
+                </p>
+              </div>
+            </div>
+          : null
+        } */}
         </div>
 
 
