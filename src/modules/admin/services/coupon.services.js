@@ -27,3 +27,7 @@ export const CouponDetails = async (id) => {
 export const CouponStatus = async (values) => {
     return await axiosInstance(options).patch(`${path}/change-status`, values)
 }
+
+export const getAllCoupons = async (query) => {
+    return await axiosInstance(options).get(`${path}/get-all-coupons?${query}`)
+}

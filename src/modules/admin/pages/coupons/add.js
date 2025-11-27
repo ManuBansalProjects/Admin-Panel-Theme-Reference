@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import Breadcrums from "../../common/breadcrumbs";
 import { globalLoader, handleServerValidations } from "../../../../utils/commonfunction";
 import CustomError from "../../../../utils/customError";
-import { discountType, SWAL_SETTINGS } from "../../../../utils/Constants";
+import { discountType, subscriptionPlanType, SWAL_SETTINGS } from "../../../../utils/Constants";
 import { CouponAdd } from "../../services/coupon.services";
 import { DatePicker } from "rsuite";
 
@@ -31,7 +31,8 @@ const AddCoupon = () => {
     name: Yup.string().trim().required("Coupon name is required"),
     code: Yup.string().trim().required("Coupon code is required"),
     discount_type: Yup.string().trim().required("Discount type is required"),
-    
+    plan_type: Yup.string().trim().required("Plan type is required"),
+
     flat_amount: Yup.number()
       .typeError("Flat amount must be a number")
       .when("discount_type", {
@@ -55,6 +56,7 @@ const AddCoupon = () => {
             .max(100, "Percentage cannot exceed 100"),
         otherwise: (schema) => schema.notRequired(),
       }),
+    
     start_date: Yup.date().required("Start date is required"),
     end_date: Yup.date().required("End date is required"),
     uses_per_customer: Yup.string().trim().required("Limit per customer is required"),
@@ -68,6 +70,7 @@ const AddCoupon = () => {
       discount_type: '',
       flat_amount: '',
       percentage: '',
+      plan_type: '',
       start_date: new Date(),
       end_date: '',
       uses_per_customer: '',
@@ -83,6 +86,8 @@ const AddCoupon = () => {
       formData.append("discount_type", values.discount_type);
       formData.append("flat_amount", values.flat_amount);
       formData.append("percentage", values.percentage);
+      formData.append("plan_type", values.plan_type);
+      formData.append("coupon_code", values.coupon_code);
 
       const startDate = new Date(values.start_date);
       startDate.setHours(0, 0, 0, 0);
@@ -249,6 +254,35 @@ const AddCoupon = () => {
                         </span>
                       </div>      
                   }
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="plan_type" className="text-left d-flex">
+                      {t("Subscription Type")}:
+                      <span className="requirestar">*</span>{" "}
+                    </label>
+                    <div className="select-down-arrow">
+                      <select
+                        name="plan_type"
+                        id="plan_type"
+                        type="text"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.plan_type}
+                        className="form-control"
+                        placeholder={t("Select Subscription Type")}
+                      >
+                        <option value={""}>Select</option>
+                        {(subscriptionPlanType).map((value, i) => {
+                          return (
+                            <option key={i} value={value.value}>{t(`${value.name}`)}</option>
+                          )
+                        })}
+                      </select>
+                    </div>
+                    <span className="text-danger d-flex text-left">
+                      <CustomError name="plan_type" form={formik} />
+                    </span>
+                  </div>
 
                    <div className="col-md-6 text-center form-group">
                       <label htmlFor="start_date" className="text-left d-flex">

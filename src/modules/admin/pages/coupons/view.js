@@ -4,7 +4,7 @@ import Loader from "../../common/loader";
 import { formateDate } from "../../../../utils/commonfunction";
 import { useTranslation } from "react-i18next";
 import Breadcrums from "../../common/breadcrumbs";
-import { discountTypeObj, subscriptionPlanType } from "../../../../utils/Constants";
+import { discountTypeObj, subscriptionPlanType, subscriptionPlanTypeObj } from "../../../../utils/Constants";
 import { CouponDetails } from "../../services/coupon.services";
 
 const CouponView = (props) => {
@@ -69,6 +69,7 @@ const CouponView = (props) => {
                               : "N/A"}
                           </td>
                         </tr>
+
                         <tr>
                           <th>{t("Discount Type")}</th>
                           <td className="text-capitalize">
@@ -101,6 +102,15 @@ const CouponView = (props) => {
                         }  
 
                         <tr>
+                          <th>{t("Subscription Type")}</th>
+                          <td className="text-capitalize">
+                            {showdefault && showdefault.plan_type
+                              ? subscriptionPlanTypeObj[showdefault.plan_type]
+                              : "N/A"}
+                          </td>
+                        </tr>
+
+                        <tr>  
                           <th>{t("Start Date")}</th>
                           <td>
                             {showdefault && showdefault.start_date

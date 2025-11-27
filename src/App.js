@@ -114,6 +114,14 @@ import UserSubscriptionHistoryTable from "./modules/admin/pages/user/user-subscr
 import UserSubscriptionHistoryDetails from "./modules/admin/pages/user/user-subscription-details";
 import ReferralSettings from "./modules/admin/pages/referral/settings";
 import AstroGPT from "./modules/admin/pages/Testing/astrogpt";
+import PromotionsList from "./modules/admin/pages/cms/promotions/list";
+import BlogAdd from "./modules/admin/pages/cms/blogs/add";
+import BlogTable from "./modules/admin/pages/cms/blogs/list";
+import BlogEdit from "./modules/admin/pages/cms/blogs/edit";
+import BlogView from "./modules/admin/pages/cms/blogs/view";
+import PromotionEdit from "./modules/admin/pages/cms/promotions/edit";
+import PromotionView from "./modules/admin/pages/cms/promotions/view";
+import PromotionAdd from "./modules/admin/pages/cms/promotions/add";
 
 
 const router = createBrowserRouter([
@@ -456,8 +464,43 @@ const router = createBrowserRouter([
         path: "cms/default-email-template/view/:id",
         element: <PrivateRoute component={ViewEmailTemp} />,
       },
-
       /** Email Logs Routing End*/
+
+      /* Promotions */
+      {
+        path: "cms/promotions/list/:pgno",
+        element: <PrivateRoute component={PromotionsList} />,
+      },
+      {
+        path: "cms/promotions/add",
+        element: <PrivateRoute component={PromotionAdd} />,
+      },
+      {
+        path: "cms/promotions/:pgno/edit/:id",
+        element: <PrivateRoute component={PromotionEdit} />,
+      },
+      {
+        path: "cms/promotions/view/:id",
+        element: <PrivateRoute component={PromotionView} />,
+      },
+
+      /* Blogs */
+      {
+        path: "cms/blogs/list/:pgno",
+        element: <PrivateRoute component={BlogTable} />,
+      },
+      {
+        path: "cms/blogs/add",
+        element: <PrivateRoute component={BlogAdd} />,
+      },
+      {
+        path: "cms/blogs/:pgno/edit/:id",
+        element: <PrivateRoute component={BlogEdit} />,
+      },
+      {
+        path: "cms/blogs/view/:id",
+        element: <PrivateRoute component={BlogView} />,
+      },
 
 
 

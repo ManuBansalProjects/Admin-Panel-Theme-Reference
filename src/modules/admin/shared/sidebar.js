@@ -115,6 +115,7 @@ const SideBar = () => {
               <i className="angle fe fe-chevron-right"></i>
             </a>
             <ul className="nav-sub">
+
               <li
                 className={`nav-sub-item ${loc.pathname.includes("/cms/pages") ? " active" : ""
                   }`}
@@ -176,6 +177,38 @@ const SideBar = () => {
                   to={`/admin/cms/default-email-template/list/${1}`}
                 >
                   {t("sidebar_link_email_template")}
+                </Link>
+              </li>
+
+              <li
+                className={
+                  "nav-sub-item" +
+                  (loc.pathname.includes("/cms/promotions")
+                    ? " active"
+                    : "")
+                }
+              >
+                <Link
+                  className="nav-sub-link"
+                  to={`/admin/cms/promotions/list/${1}`}
+                >
+                  Promotions
+                </Link>
+              </li>
+
+               <li
+                className={
+                  "nav-sub-item" +
+                  (loc.pathname.includes("/cms/blogs")
+                    ? " active"
+                    : "")
+                }
+              >
+                <Link
+                  className="nav-sub-link"
+                  to={`/admin/cms/blogs/list/${1}`}
+                >
+                  Blogs
                 </Link>
               </li>
 
@@ -267,7 +300,7 @@ const SideBar = () => {
 
 
           {/* Coupon */}
-          {/* <li
+           <li
             className={
               `nav-item ` +
               (loc.pathname.includes("/coupon")
@@ -286,7 +319,7 @@ const SideBar = () => {
                 Coupons
               </span>
             </Link>
-          </li> */}
+          </li> 
 
           {/* Referrals */}
           {/* <li
@@ -354,7 +387,7 @@ const SideBar = () => {
           {/* Global settings end */}
 
           {/* dummy astroGPT START*/}
-          <li className={
+          {/* <li className={
             `nav-item ` +
             (loc.pathname.includes("/admin/astrogpt")
               ? "show active"
@@ -368,8 +401,27 @@ const SideBar = () => {
                 AstroGPT Testing
               </span>
             </Link>
-          </li>
+          </li> */}
           {/* dummy astroGPT END */}
+
+          {/* Personalization categories Start*/}
+          <li className={
+            `nav-item ` +
+            (loc.pathname.includes("/admin/personalization-categories")
+              ? "show active"
+              : "")
+          } >
+            <Link className="nav-link" to="/admin/personalization-categories">
+              <span className="shape1"></span>
+              <span className="shape2"></span>
+              <i className="fa fa-user-tie sidemenu-icon"></i>
+              <span className="sidemenu-label">
+                Personalization Feeds
+              </span>
+            </Link>
+          </li>
+          {/* Personalization categories Start*/}
+
         </ul>
       </div>
     </div>

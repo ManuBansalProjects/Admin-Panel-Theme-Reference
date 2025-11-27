@@ -128,6 +128,10 @@ export const subscriptionPlanType = [
   { name: "Question", value: "question" },
   { name: "Report", value: "report" },
 ];
+export const subscriptionPlanTypeObj = {
+  question: 'Question',
+  report: 'Report'
+}
 
 export const discountType = [
   { name: "FLAT AMOUNT", value: "flat_amount" },
@@ -137,6 +141,7 @@ export const discountTypeObj = {
   flat_amount: 'FLAT AMOUNT',
   percentage: 'PERCENTAGE'
 }
+
 
 export const earningType = [
   { name: "Question", value: "question" },
