@@ -99,7 +99,7 @@ const UserTable = () => {
 
   const viewfunction = (row) => {
     navigate(
-      `/admin/user-management/user/view/${row._id}`
+      `/admin/user-management/user/view/${row._id}/1`
     );
   };
 

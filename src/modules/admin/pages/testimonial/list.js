@@ -86,7 +86,7 @@ const TestimonialTable = () => {
 
   const viewfunction = (row) => {
     navigate(
-      `/admin/testimonial-management/testimonial/view/${row._id}?page=1&chat_page=1`
+      `/admin/cms/testimonials/view/${row._id}?page=1&chat_page=1`
     );
   };
 
@@ -222,7 +222,7 @@ const TestimonialTable = () => {
 
   const goToEdit = (row) => {
     navigate(
-      `/admin/testimonial-management/testimonial/${params.pgno}/edit/${row._id}`
+      `/admin/cms/testimonials/${params.pgno}/edit/${row._id}`
     );
   };
 
@@ -278,7 +278,7 @@ const TestimonialTable = () => {
                 <button
                   className="btn ripple btn-main-primary signbtn mr-2"
                   onClick={() =>
-                    navigate(`/admin/testimonial-management/testimonial/add`)
+                    navigate(`/admin/cms/testimonials/add`)
                   }
                 >
                   {t("btn_add_new")}

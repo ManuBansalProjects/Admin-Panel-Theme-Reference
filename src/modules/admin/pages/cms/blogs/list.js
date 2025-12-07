@@ -250,7 +250,11 @@ const BlogTable = () => {
                 <thead>
                   <tr>
                     <th className='sr_head'>{t("list_heading_sno")}</th>
-                   
+
+                    <th style={{ width: "50px" }}>
+                      Image
+                    </th>
+
                     <th>
                       <div className="sorting_column">
                         <span>Title</span>
@@ -269,6 +273,31 @@ const BlogTable = () => {
                           handleSort={handleSort}
                           column="description"
                         />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="sorting_column">
+                        <span>Likes</span>
+                        <Sorting
+                          sort={sorting}
+                          handleSort={handleSort}
+                          column="like"
+                        />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="sorting_column">
+                        <span>DisLikes</span>
+                        <Sorting
+                          sort={sorting}
+                          handleSort={handleSort}
+                          column="dislike"
+                        />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="sorting_column">
+                        <span>Is Blog of the Day</span>
                       </div>
                     </th>
                     <th>
@@ -302,10 +331,28 @@ const BlogTable = () => {
                               <td>
                                 {row ? ((page - 1) * itemperpage) + i + 1 : null}
                               </td>
+
+                               <td>
+                                {row?.image ? (
+                                  <div className="row_image">
+                                    <img
+                                      className="rounded"
+                                      alt="profile"
+                                      src={row.image}
+                                    />
+                                  </div>
+                                ) : (
+                                  "N/A"
+                                )}
+                              </td>
+
                               <td>
                                 {row?.title ? TrimText(row.title, 20) : "N/A"}
                               </td>
                               <td>{row?.description ? TrimText(row.description, 20) : "N/A"}</td>
+                              <td>{row?.like}</td>
+                              <td>{row?.dislike}</td>
+                              <td>{row?.is_blog_of_the_day ? 'True' : 'False'}</td>
                             
                               <td>
                                 {row?.createdAt

@@ -24,7 +24,7 @@ const TestimonialAdd = (props) => {
     { title: t("sidebar_link_dashboard"), url: "/admin/dashboard" },
     {
       title: t("sidebar_link_testimonial"),
-      url: "/admin/testimonial-management/testimonial/list/1",
+      url: "/admin/cms/testimonials/list/1",
     },
     { title: t("link_add"), url: "" },
   ];
@@ -38,7 +38,7 @@ const TestimonialAdd = (props) => {
     country: Yup.string().trim().required(t("label_country_error")),
     rating: Yup.number()
     .min(1, t("validation_error_rating_min_1"))
-    .max(10, t("validation_error_rating_max_10"))
+    .max(5, t("validation_error_rating_max_5"))
     .required(t("validate_error_rating")),
     profile_image: Yup.string().required(t("validation_error_profile_img_required")),
   });
@@ -82,7 +82,7 @@ const TestimonialAdd = (props) => {
             });
             globalLoader(false);
             resetForm({ values: "" });
-            navigate(`/admin/testimonial-management/testimonial/list/1`);
+            navigate(`/admin/cms/testimonials/list/1`);
           } else {
             Swal.fire({
               icon: "error",
@@ -190,7 +190,7 @@ const TestimonialAdd = (props) => {
 
                   <div className="col-md-6 text-center form-group">
                     <label htmlFor="rating" className="text-left d-flex">
-                      {t("label_rating_1_to_10")}:
+                      {t("label_rating_1_to_5")}:
                       <span className="requirestar">*</span>{" "}
                     </label>
                     <input
@@ -198,7 +198,7 @@ const TestimonialAdd = (props) => {
                       id="rating"
                       type="number"
                       min="1"
-                      max="10"
+                      max="5"
                       step="1"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
