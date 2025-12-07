@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
-import * as testimonialService from "../../services/testimonial.services";
+import * as personalizationCategoryService from "../../services/personalizationCategories.services";
 import CustomPagination from "../../common/custompagination";
 import Sorting from "../../common/sorting";
 import Loader from "../../common/loader";
@@ -21,7 +21,7 @@ import StatusFilter from "../../common/statusFilter";
 import CustomRangepicker from "../../common/rangepicker";
 // import * as Yup from "yup";
 
-const TestimonialTable = () => {
+const PersonalizationCategoriesList = () => {
   const { t } = useTranslation();
   const params = useParams();
   const location = useLocation();
@@ -39,7 +39,7 @@ const TestimonialTable = () => {
   const [globalsearch, setGlobalSearch] = useState("");
   const breadcrumbs = [
     { title: t("sidebar_link_dashboard"), url: "/admin/dashboard" },
-    { title: t("sidebar_link_testimonial"), url: "" },
+    { title: 'Personalization Feeds', url: "" },
   ];
   const [resetdate, setResetDate] = useState(false);
 
@@ -55,7 +55,7 @@ const TestimonialTable = () => {
         formData.append("sort", JSON.stringify(sorting));
         formData.append("search", JSON.stringify(search));
         formData.append("global_search", globalsearch);
-        testimonialService
+        personalizationCategoryService
           .List(formData)
           .then((data) => {
             setDataLength(data.data.total_records);
@@ -84,54 +84,54 @@ const TestimonialTable = () => {
     params.pgno,
   ]);
 
-  const viewfunction = (row) => {
-    navigate(
-      `/admin/cms/testimonials/view/${row._id}?page=1&chat_page=1`
-    );
-  };
+  // const viewfunction = (row) => {
+  //   navigate(
+  //     `/admin/cms/testimonials/view/${row._id}?page=1&chat_page=1`
+  //   );
+  // };
 
-  const ChangeStatus = (data, Num) => {
-    let ids = Array.isArray(data) ? data : [data];
-    const formData = new FormData();
-    formData.append("o_id", JSON.stringify(ids));
-    formData.append("status", Num);
-    Swal.fire({
-      customClass: "swal-wide",
-      title: t("msg_are_you_sure"),
-      icon: "warning",
-      showCancelButton: true,
-      cancelButtonText: t("btn_cancel"),
-      confirmButtonColor: "#403fad",
-      cancelButtonColor: "#f1388b",
-      confirmButtonText: t("btn_yes"),
-    }).then((result) => {
-      // console.log("result", result);
-      if (result.isConfirmed) {
-        testimonialService
-          .Status(formData)
-          .then((response) => {
-            // console.log("kkkk---", response);
-            if (response.success) {
-              Swal.fire({
-                icon: "success",
-                text: response.message,
-                ...SWAL_SETTINGS,
-              });
-              setStatusUpdate(!statsupdate);
-            } else {
-              Swal.fire({
-                icon: "error",
-                text: handleServerValidations(response),
-                ...SWAL_SETTINGS,
-              });
-            }
-          })
-          .catch((error) => {
-            console.log("error===>");
-          });
-      }
-    });
-  };
+  // const ChangeStatus = (data, Num) => {
+  //   let ids = Array.isArray(data) ? data : [data];
+  //   const formData = new FormData();
+  //   formData.append("o_id", JSON.stringify(ids));
+  //   formData.append("status", Num);
+  //   Swal.fire({
+  //     customClass: "swal-wide",
+  //     title: t("msg_are_you_sure"),
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     cancelButtonText: t("btn_cancel"),
+  //     confirmButtonColor: "#403fad",
+  //     cancelButtonColor: "#f1388b",
+  //     confirmButtonText: t("btn_yes"),
+  //   }).then((result) => {
+  //     // console.log("result", result);
+  //     if (result.isConfirmed) {
+  //       testimonialService
+  //         .Status(formData)
+  //         .then((response) => {
+  //           // console.log("kkkk---", response);
+  //           if (response.success) {
+  //             Swal.fire({
+  //               icon: "success",
+  //               text: response.message,
+  //               ...SWAL_SETTINGS,
+  //             });
+  //             setStatusUpdate(!statsupdate);
+  //           } else {
+  //             Swal.fire({
+  //               icon: "error",
+  //               text: handleServerValidations(response),
+  //               ...SWAL_SETTINGS,
+  //             });
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           console.log("error===>");
+  //         });
+  //     }
+  //   });
+  // };
 
 
 
@@ -142,61 +142,61 @@ const TestimonialTable = () => {
   //   event_id: Yup.string().required("Event is required"),
   // });
 
-  function Deletefunction(data) {
-    Swal.fire({
-      customClass: "swal-wide",
-      title: t("msg_are_you_sure"),
-      text: t("you_not_be_able_to_revert_this"),
-      icon: "warning",
-      showCancelButton: true,
-      cancelButtonText: t("btn_cancel"),
-      confirmButtonColor: "#403fad",
-      cancelButtonColor: "#f1388b",
-      confirmButtonText: t("btn_yes_delete"),
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const formdata = new FormData();
-        let ids = Array.isArray(data) ? data : [data];
-        // formdata.append("o_id", row._id);
-        formdata.append("o_id", JSON.stringify(ids));
-        testimonialService
-          .Delete(formdata)
-          .then((response) => {
-            // console.log("🚀 ~ .then ~ response:", response);
-            setStatusUpdate(!statsupdate);
-            if (response.success) {
-              Swal.fire({
-                icon: "success",
-                text: response.message,
-                ...SWAL_SETTINGS,
-              });
+  // function Deletefunction(data) {
+  //   Swal.fire({
+  //     customClass: "swal-wide",
+  //     title: t("msg_are_you_sure"),
+  //     text: t("you_not_be_able_to_revert_this"),
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     cancelButtonText: t("btn_cancel"),
+  //     confirmButtonColor: "#403fad",
+  //     cancelButtonColor: "#f1388b",
+  //     confirmButtonText: t("btn_yes_delete"),
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       const formdata = new FormData();
+  //       let ids = Array.isArray(data) ? data : [data];
+  //       // formdata.append("o_id", row._id);
+  //       formdata.append("o_id", JSON.stringify(ids));
+  //       testimonialService
+  //         .Delete(formdata)
+  //         .then((response) => {
+  //           // console.log("🚀 ~ .then ~ response:", response);
+  //           setStatusUpdate(!statsupdate);
+  //           if (response.success) {
+  //             Swal.fire({
+  //               icon: "success",
+  //               text: response.message,
+  //               ...SWAL_SETTINGS,
+  //             });
 
-            } else {
-              Swal.fire({
-                icon: "error",
-                text: handleServerValidations(response),
-                ...SWAL_SETTINGS,
-              });
-            }
-          })
-          .catch((error) => {
-            console.log("deleteError");
-          });
-      }
-    });
-  }
+  //           } else {
+  //             Swal.fire({
+  //               icon: "error",
+  //               text: handleServerValidations(response),
+  //               ...SWAL_SETTINGS,
+  //             });
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           console.log("deleteError");
+  //         });
+  //     }
+  //   });
+  // }
 
   // sorting function start
-  const handleSort = (e, column) => {
-    setDefaultSorting(false);
-    let sort = { order: 0, column: column };
-    if (e.target.classList.contains("assc")) {
-      sort.order = -1;
-    } else {
-      sort.order = 1;
-    }
-    setSorting(sort);
-  };
+  // const handleSort = (e, column) => {
+  //   setDefaultSorting(false);
+  //   let sort = { order: 0, column: column };
+  //   if (e.target.classList.contains("assc")) {
+  //     sort.order = -1;
+  //   } else {
+  //     sort.order = 1;
+  //   }
+  //   setSorting(sort);
+  // };
   // sorting end
 
   // search or filter function
@@ -222,7 +222,7 @@ const TestimonialTable = () => {
 
   const goToEdit = (row) => {
     navigate(
-      `/admin/cms/testimonials/${params.pgno}/edit/${row._id}`
+      `/admin/personalizarion-categories/${params.pgno}/edit/${row._id}`
     );
   };
 
@@ -235,7 +235,7 @@ const TestimonialTable = () => {
           <div className="card-body">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h6 className="main-content-label">
-                {t("sidebar_link_testimonials")}
+                Personalization Feeds
               </h6>
               <div className="d-flex align-items-center">
                 <div className="form-group mb-0 me-3">
@@ -275,14 +275,14 @@ const TestimonialTable = () => {
                 >
                   {t("btn_reset_filter")}
                 </button>
-                <button
+                {/* <button
                   className="btn ripple btn-main-primary signbtn mr-2"
                   onClick={() =>
                     navigate(`/admin/cms/testimonials/add`)
                   }
                 >
                   {t("btn_add_new")}
-                </button>
+                </button> */}
               </div>
             </div>
             <div className="table-responsive">
@@ -293,34 +293,24 @@ const TestimonialTable = () => {
                       <span>{t("list_heading_sno")}</span>
                     </th>
 
-                    <th style={{ width: "50px" }}>
+                    {/* <th style={{ width: "50px" }}>
                       {t("label_profile_picture")}
-                    </th>
+                    </th> */}
                     <th>
                       <div className="sorting_column">
-                        <span>{t("list_heading_name")}</span>
-                        <Sorting
+                        <span>Category</span>
+                        {/* <Sorting
                           sort={sorting}
                           handleSort={handleSort}
                           column="name"
-                        />
+                        /> */}
                       </div>
                     </th>
 
-                    <th>
-                      <div className="rating_head">
-                        <span>{t("label_rating")}</span>
-                      </div>
-                    </th>
+                
 
-                    <th>
-                      <div className="review_head">
-                        <span>{t("label_review")}</span>
-                      </div>
-                    </th>
-
-                    {/* <th className="status_head">SUBSCRIBE</th> */}
-                    <th className="created_head">
+                
+                    {/* <th className="created_head">
                       <div className="sorting_column">
                         <span>{t("list_heading_created_date")}</span>
                         <Sorting
@@ -330,9 +320,7 @@ const TestimonialTable = () => {
                           column="createdAt"
                         />
                       </div>
-                    </th>
-                    {/* <th>Created By</th>
-                    <th>Updated By</th> */}
+                    </th> */}
                     <th className="status_head">{t("list_heading_status")}</th>
                     <th className="action_head">{t("list_heading_action")}</th>
                   </tr>
@@ -357,7 +345,7 @@ const TestimonialTable = () => {
                                 {row ? ((page - 1) * itemperpage) + i + 1 : null}
                               </td>
 
-                              <td>
+                              {/* <td>
                                 {row?.profile_image ? (
                                   <div className="row_image">
                                     <img
@@ -369,74 +357,29 @@ const TestimonialTable = () => {
                                 ) : (
                                   "N/A"
                                 )}
-                              </td>
+                              </td> */}
 
                               <td>
-                                {row?.name ? (
+                                {row?.category_name ? (
                                   <div className="d-flex">
-                                    {row?.name ? row.name : "N/A"}
+                                    {row?.category_name ? row.category_name : "N/A"}
                                   </div>
                                 ) : (
                                   <div className="d-flex">"N/A"</div>
                                 )}
                               </td>
 
-                              <td>
-                                {row?.rating ? (
-                                  <div className="d-flex">
-                                    {row?.rating ? row.rating : "N/A"}
-                                  </div>
-                                ) : (
-                                  <div className="d-flex">N/A</div>
-                                )}
-                              </td>
-
-                              <td>
-                                {row?.testimonial_text ? (
-                                  <div className="d-flex">{TrimText(row.testimonial_text, 80)}</div>
-                                ) : (
-                                  <div className="d-flex">N/A</div>
-                                )}
-                              </td>
-
-                              <td>
-                                {row.createdAt
-                                  ? formateDateWithMonth(row.createdAt)
-                                  : "N/A"}
-                              </td>
-
-                              <td>
-                                {row.status === 1 ? (
-                                  <button
-                                    className="btn ripple btn-main-primary signbtn"
-                                    onClick={() => {
-                                      ChangeStatus(row?._id, 0);
-                                    }}
-                                  >
-                                    {t("btn_active")}
-                                  </button>
-                                ) : (
-                                  <button
-                                    className="btn ripple btn-secondary"
-                                    onClick={() => {
-                                      ChangeStatus(row?._id, 1);
-                                    }}
-                                  >
-                                    {t("btn_inactive")}
-                                  </button>
-                                )}
-                              </td>
-
+                              
                               <td>
                                 <div className="d-flex">
-                                  <button
+                                  {/* <button
                                     className="btn ripple btn-main-primary signbtn"
                                     onClick={() => {
                                       viewfunction(row);
                                     }}
                                   >
                                     {t("btn_view")}
-                                  </button>
+                                  </button> */}
 
                                   <button
                                     className="btn ripple btn-success mlAction"
@@ -446,14 +389,14 @@ const TestimonialTable = () => {
                                   >
                                     {t("btn_edit")}
                                   </button>
-                                  <button
+                                  {/* <button
                                     className="btn ripple btn-secondary mlAction"
                                     onClick={() => {
                                       Deletefunction(row?._id);
                                     }}
                                   >
                                     {t("btn_delete")}
-                                  </button>
+                                  </button> */}
                                 </div>
                               </td>
                             </tr>
@@ -505,4 +448,4 @@ const TestimonialTable = () => {
   );
 };
 
-export default TestimonialTable;
+export default PersonalizationCategoriesList;

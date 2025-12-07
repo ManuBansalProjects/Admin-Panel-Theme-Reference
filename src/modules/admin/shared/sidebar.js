@@ -212,6 +212,21 @@ const SideBar = () => {
                 </Link>
               </li>
 
+              <li
+                className={
+                  "nav-sub-item" +
+                  (loc.pathname.includes("/cms/testimonials")
+                    ? " active"
+                    : "")
+                }
+              >
+                <Link
+                  className="nav-sub-link"
+                  to={`/admin/cms/testimonials/list/${1}`}
+                >
+                  Testimonials
+                </Link>
+              </li>  
               {/* <li
                 className={
                   "nav-sub-item" +
@@ -239,7 +254,7 @@ const SideBar = () => {
           {/* Cms section end */}
 
           {/* subscription section start */}
-          {/* <li
+          <li
             className={
               `nav-item ` +
               (loc.pathname.includes("/admin/subscription") ? "show active" : "")
@@ -295,7 +310,7 @@ const SideBar = () => {
               </li>
 
             </ul>
-          </li> */}
+          </li>
           {/* subscription section end */}
 
 
@@ -322,7 +337,7 @@ const SideBar = () => {
           </li> 
 
           {/* Referrals */}
-          {/* <li
+          <li
             className={
               `nav-item ` +
               (loc.pathname.includes("/admin/referrals") ? "show active" : "")
@@ -366,7 +381,7 @@ const SideBar = () => {
               </li>
 
             </ul>
-          </li> */}
+          </li>
 
           {/* Global setings start */}
           <li className={
@@ -405,13 +420,13 @@ const SideBar = () => {
           {/* dummy astroGPT END */}
 
           {/* Personalization categories Start*/}
-          <li className={
+          {/* <li className={
             `nav-item ` +
             (loc.pathname.includes("/admin/personalization-categories")
               ? "show active"
               : "")
           } >
-            <Link className="nav-link" to="/admin/personalization-categories">
+            <Link className="nav-link" to="/admin/personalization-categories/list/1">
               <span className="shape1"></span>
               <span className="shape2"></span>
               <i className="fa fa-user-tie sidemenu-icon"></i>
@@ -419,7 +434,7 @@ const SideBar = () => {
                 Personalization Feeds
               </span>
             </Link>
-          </li>
+          </li> */}
           {/* Personalization categories Start*/}
 
         </ul>

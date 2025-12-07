@@ -14,7 +14,7 @@ const BlogView = () => {
   const [showdefault, setShowDefault] = useState({});
   const breadcrumbs = [
     { title: t("sidebar_link_dashboard"), url: "/admin/dashboard" },
-    { title: t("sidebar_link_pages"), url: "/admin/cms/blogs/list/1" },
+    { title: 'Blogs', url: "/admin/cms/blogs/list/1" },
     { title: t("btn_view"), url: "" },
   ];
  

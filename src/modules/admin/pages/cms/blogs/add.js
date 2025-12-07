@@ -38,6 +38,7 @@ const BlogAdd = () => {
     setInitialValues({
       title: "",
       description: "",
+      is_blog_of_the_day: "",
       image: ""
     });
     setDataLoaded(true);
@@ -99,6 +100,7 @@ const BlogAdd = () => {
             let formData = new FormData();
             formData.append("title", values.title);
             formData.append("description", values.description);
+            formData.append("is_blog_of_the_day", values.is_blog_of_the_day);
             formData.append("image", values.image);
             
             blogServices
@@ -273,6 +275,40 @@ const BlogAdd = () => {
                             ""
                           )}
                         </div>      
+
+                        <div className="col-lg-6 text-center form-group">
+                          <label htmlFor="description" className="text-left d-flex">
+                            Is Blog of the Day:
+                            <Whisper
+                              placement="top"
+                              controlId="control-id-hover"
+                              trigger="hover"
+                              speaker={
+                                <Tooltip>
+                                  {t("tooltip_page_title")}
+                                </Tooltip>
+                              }
+                            >
+                              <span className="field-more-info mt-1 ms-1 cp">
+                                ?
+                              </span>
+                            </Whisper>
+                          </label>
+                            <div className="select-down-arrow">
+                              <select
+                                name="is_blog_of_the_day"
+                                id="is_blog_of_the_day"
+                                type="text"
+                                onChange={(event)=> {handleChange(event); }}
+                                onBlur={handleBlur}
+                                value={values.is_blog_of_the_day}
+                                className="form-control"
+                              >
+                                <option value='true'>True</option>
+                                <option value='false'>False</option>
+                              </select>
+                            </div>
+                        </div>
                        
 
                         <div className="">

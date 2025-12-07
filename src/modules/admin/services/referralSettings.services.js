@@ -14,5 +14,8 @@ export const ChangeReferralSettingsStatus = async (status) => {
   return await axiosInstance(options).put(`${path}/settings/status?status=${status}`);
 };
 
+export const ListReferralHistory = async (values) => {
+  return await axiosInstance(options).post(`${path}/history`, values);
+};
 
 

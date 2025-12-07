@@ -354,7 +354,7 @@
   "link_contract_information": "Vertragsinformationen",
   "link_mail_notification_settings": "Mail -Benachrichtigungseinstellungen",
   "validation_error_rating_min_1": "Die Bewertung muss mindestens 1 betragen",
-  "validation_error_rating_max_10": "Die Bewertung muss höchstens 10 sein",
+  "validation_error_rating_max_5": "Die Bewertung muss höchstens 10 sein",
   "validate_error_rating": "Bewertung ist erforderlich",
   "restaurant_id": "Restaurantausweis",
   "restaurant_time": "Restaurant Eröffnung und Schließzeit",

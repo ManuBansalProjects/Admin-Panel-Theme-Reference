@@ -354,7 +354,7 @@
   "link_contract_information": "Szerződéses információk",
   "link_mail_notification_settings": "Levél -értesítési beállítások",
   "validation_error_rating_min_1": "A besorolásnak legalább 1 -nek kell lennie",
-  "validation_error_rating_max_10": "A besorolásnak legfeljebb 10 -nek kell lennie",
+  "validation_error_rating_max_5": "A besorolásnak legfeljebb 10 -nek kell lennie",
   "validate_error_rating": "A besorolás szükséges",
   "restaurant_id": "Éttermi személyi igazolvány",
   "restaurant_time": "Étterem megnyitása és bezárása",

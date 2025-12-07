@@ -18,7 +18,7 @@ const TestimonialView = (props) => {
     { title: t("sidebar_link_dashboard"), url: "/admin/dashboard" },
     {
       title: t("sidebar_link_testimonial"),
-      url: "/admin/testimonial-management/testimonial/list/1",
+      url: "/admin/cms/testimonials/list/1",
     },
     { title: t("btn_view"), url: "" },
   ];
@@ -189,7 +189,7 @@ const TestimonialView = (props) => {
                 className="btn ripple btn-dark"
                 type="button"
                 onClick={() =>
-                  navigate("/admin/testimonial-management/testimonial/list/1")
+                  navigate("/admin/cms/testimonials/list/1")
                 }
               >
                 <i className="ace-icon-solid ion-arrow-return-left bigger-110 mx-1"></i>

@@ -354,7 +354,7 @@
   "link_contract_information": "Información sobre el contrato",
   "link_mail_notification_settings": "Configuración de notificación de correo",
   "validation_error_rating_min_1": "La calificación debe ser al menos 1",
-  "validation_error_rating_max_10": "La calificación debe ser como máximo 10",
+  "validation_error_rating_max_5": "La calificación debe ser como máximo 10",
   "validate_error_rating": "Se requiere calificación",
   "restaurant_id": "ID de restaurante",
   "restaurant_time": "Tiempo de apertura y cierre del restaurante",

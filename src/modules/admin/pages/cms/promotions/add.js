@@ -55,7 +55,7 @@ const PromotionAdd = () => {
      couponServices
           .getAllCoupons(`promotion_type=${promotionType}`)
           .then((data) => {
-            setCouponDropDown(data && data.data ? data.data : []);
+            setCouponDropDown(data && data.data && data.data.length ? data.data : []);
           })
           .catch((error) => {
             console.log("error=====>", error);

@@ -122,7 +122,13 @@ import BlogView from "./modules/admin/pages/cms/blogs/view";
 import PromotionEdit from "./modules/admin/pages/cms/promotions/edit";
 import PromotionView from "./modules/admin/pages/cms/promotions/view";
 import PromotionAdd from "./modules/admin/pages/cms/promotions/add";
-
+import TestimonialAdd from "./modules/admin/pages/testimonial/add";
+import TestimonialView from "./modules/admin/pages/testimonial/view";
+import TestimonialTable from "./modules/admin/pages/testimonial/list";
+import TestimonialEdit from "./modules/admin/pages/testimonial/edit";
+import PersonalizationCategoriesList from "./modules/admin/pages/personalizationCategories/list";
+import PersonalizationCategoryEdit from "./modules/admin/pages/personalizationCategories/edit";
+import ReferralHistoryTable from "./modules/admin/pages/referral/referral_history";
 
 const router = createBrowserRouter([
 
@@ -272,7 +278,7 @@ const router = createBrowserRouter([
         element: <UserTable />,
       },
       {
-        path: "user-management/user/view/:id",
+        path: "user-management/user/view/:id/:pgno",
         element: <UserView />,
       },
       {
@@ -502,6 +508,23 @@ const router = createBrowserRouter([
         element: <PrivateRoute component={BlogView} />,
       },
 
+      /* Testimonials */
+      {
+        path: "cms/testimonials/list/:pgno",
+        element: <PrivateRoute component={TestimonialTable} />,
+      },
+      {
+        path: "cms/testimonials/add",
+        element: <PrivateRoute component={TestimonialAdd} />,
+      },
+      {
+        path: "cms/testimonials/:pgno/edit/:id",
+        element: <PrivateRoute component={TestimonialEdit} />,
+      },
+      {
+        path: "cms/testimonials/view/:id",
+        element: <PrivateRoute component={TestimonialView} />,
+      },
 
 
       // Subscription features
@@ -582,7 +605,7 @@ const router = createBrowserRouter([
       },
       {
         path: "referrals/history/list/:pgno",
-        element: <PrivateRoute component={AddCoupon} />,
+        element: <PrivateRoute component={ReferralHistoryTable} />,
       },
 
       //Global settings
@@ -590,11 +613,22 @@ const router = createBrowserRouter([
         path: "global-settings",
         element: <PrivateRoute component={GlobalSettings} />,
       },
-      //AstroGPT
+
+      //Personalization-categories
       {
-        path: "astrogpt",
-        element: <PrivateRoute component={AstroGPT} />,
+        path: "personalization-categories/list/:pgno",
+        element: <PrivateRoute component={PersonalizationCategoriesList} />,
       },
+      {
+        path: "personalization-categories/edit/:id",
+        element: <PrivateRoute component={PersonalizationCategoryEdit} />,
+      },
+
+      //AstroGPT
+      // {
+      //   path: "astrogpt",
+      //   element: <PrivateRoute component={AstroGPT} />,
+      // },
     ],
   },
   {

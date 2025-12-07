@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Loader from "../../common/loader";
 import { capitalizeFirstLetter, formateDate, formateDateWithMonth, getFormatedTime, handleServerValidations } from "../../../../utils/commonfunction";
 import { useTranslation } from "react-i18next";
@@ -8,17 +8,30 @@ import Breadcrums from "../../common/breadcrumbs";
 import { subscribeForPremium, subscriptionHistoryList, unsubscribeFromPremium, userDetails } from "../../services/user.service";
 import Swal from "sweetalert2";
 import { SUBSCRIPTION_NAMES, SUBSCRIPTION_PRODUCT_IDS, SWAL_SETTINGS } from "../../../../utils/Constants";
+import { SubscriptionHistoryList } from "../../services/subscriptionPlan.services";
+import CustomRangepicker from "../../common/rangepicker";
+import CustomPagination from "../../common/custompagination";
 
 const UserView = (props) => {
     const navigate = useNavigate();
     const { t } = useTranslation();
-
+    const location = useLocation();
     const params = useParams();
     // const [query] = useSearchParams();
+
     const [showdefault, setShowDefault] = useState({});
     const [statsupdate, setStatusUpdate] = useState("false");
     const [activeTab, setActiveTab] = useState("details");
     const [subscriptionList, setSubscriptionList] = useState([]);
+    const [datalength, setDataLength] = useState("");
+    const [itemperpage] = useState(10);
+    const [sorting, setSorting] = useState({});
+    const [defaultSorting, setDefaultSorting] = useState(true);
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState({});
+    const [globalsearch, setGlobalSearch] = useState("");
+    const [loader, setLoader] = useState(true);
+    const [resetdate, setResetDate] = useState(false);
 
     const breadcrumbs = [
         { title: t("link_dashboard"), url: "/admin/dashboard" },
@@ -40,15 +53,43 @@ const UserView = (props) => {
             });
     }, [params.id, statsupdate]);
 
-    const handleSubscriptionHistory = () => {
-        subscriptionHistoryList(params.id)
-            .then((response) => {
-                setSubscriptionList(response?.data?.list);
-            })
-            .catch((err) => {
-                console.log("Err===>", err);
-            });
-    };
+
+    useEffect(() => {
+        if(activeTab != 'subscriptionHistory')return;
+
+        const getData = setTimeout(() => {
+          if (search) {
+            setLoader(true);
+            const formData = new FormData();
+            formData.append("page", params.pgno);
+            formData.append("per_page", itemperpage);
+            formData.append("sort", JSON.stringify(sorting));
+            formData.append("search", JSON.stringify(search));
+            formData.append("global_search", globalsearch);
+            SubscriptionHistoryList(formData)
+              .then((data) => {
+                setDataLength(data.data.total_records);
+                setSubscriptionList(data && data.data && data.data.list ? data.data.list : []);
+                setPage(data && data.data && data.data.page ? data.data.page : 1);
+                setLoader(false);
+              })
+              .catch((error) => {
+                 setLoader(false);
+                console.log("error ====> ", error);
+              });
+          }
+        }, 300);
+        return () => clearTimeout(getData)
+      }, [
+        activeTab,
+        location,
+        statsupdate,
+        sorting,
+        search,
+        globalsearch,
+        itemperpage,
+        params.pgno,
+    ]);
 
     const SubscribePremiumPlan = (o_id, plan_type) => {
         Swal.fire({
@@ -121,6 +162,37 @@ const UserView = (props) => {
         });
     };
 
+    const handleSort = (e, column) => {
+        setDefaultSorting(false);
+        let sort = { order: 0, column: column };
+        if (e.target.classList.contains("assc")) {
+        sort.order = -1;
+        } else {
+        sort.order = 1;
+        }
+        setSorting(sort);
+    };
+  // sorting end
+
+    // search or filter function
+    const prepareSearch = (key, value) => {
+        let sr = { ...search };
+        if (String(value).length > 0) {
+        sr[key] = value;
+        } else {
+        delete sr[key];
+        }
+        setSearch(sr);
+    };
+
+    const resetFilter = (e) => {
+        e.preventDefault();
+        setGlobalSearch("");
+        prepareSearch();
+        setSearch({});
+        setResetDate(!resetdate);
+        // $("#defaultstatus")[0].selectedIndex = 0;
+    };
     return (
         <>
             <Breadcrums data={breadcrumbs} />
@@ -133,27 +205,28 @@ const UserView = (props) => {
                                     {t("View Details")}
                                 </button>
                             </li>
-                            <li className="nav-item">
+                            {/* <li className="nav-item">
                                 <button className={`nav-link ${activeTab === "subscriptionPlan" ? "active" : ""}`} onClick={() => setActiveTab("subscriptionPlan")}>
                                     {t("Subscription Plan")}
                                 </button>
-                            </li>
-                            <li className="nav-item">
+                            </li> */}
+                            
+                            {/* <li className="nav-item">
                                 <button
                                     className={`nav-link ${activeTab === "subscriptionHistory" ? "active" : ""}`}
                                     onClick={() => {
                                         setActiveTab("subscriptionHistory");
-                                        handleSubscriptionHistory();
                                     }}
                                 >
                                     {t("Subscription History")}
                                 </button>
-                            </li>
-                            <li className="nav-item">
+                            </li> */}
+
+                            {/* <li className="nav-item">
                                 <button className={`nav-link ${activeTab === "questionnaire" ? "active" : ""}`} onClick={() => setActiveTab("questionnaire")}>
                                     {t("Questionnaire")}
                                 </button>
-                            </li>
+                            </li> */}
                         </ul>
 
                         <div className="card-body">
@@ -227,130 +300,234 @@ const UserView = (props) => {
                                         </div>
                                     )}
 
-                                    {/* Separate Subscription Plan Section */}
-                                    {activeTab === "subscriptionPlan" && (
-                                        <div className="col-lg-12">
-                                            <div className="card shadow-sm border">
+                                    {/* subscription history section */}
+
+                                    {/* {activeTab === "subscriptionHistory" && (
+                                        <div className="animation_fade">
+                                            <div className="card custom-card">
                                                 <div className="card-body">
-                                                    <h5 className="mb-3">{t("Subscription Plan")}</h5>
-
-                                                    {/* Extract values for clarity */}
-                                                    {(() => {
-                                                        const isFreePlan = showdefault?.subscription_plan === "free";
-                                                        const expiryDate = new Date(showdefault?.subscription_expiry);
-                                                        const isExpired = !showdefault?.subscription_expiry || expiryDate <= new Date();
-                                                        const isPremium = showdefault?.subscription_plan === "premium";
-                                                        const isPremiumAndActive = isPremium && !isExpired;
-
-                                                        if (isPremiumAndActive) {
-                                                            return (
-                                                                <>
-                                                                    <p>
-                                                                        <strong>{t("Current Plan")}:</strong> {capitalizeFirstLetter(showdefault.subscription_plan)}
-                                                                    </p>
-                                                                    <p>
-                                                                        <strong>{t("Plan Type")}:</strong> {SUBSCRIPTION_NAMES[showdefault.subscription_type]}
-                                                                    </p>
-                                                                    <p>
-                                                                        <strong>{t("Expiry Date")}:</strong> {expiryDate.toLocaleDateString()}
-                                                                    </p>
-                                                                    <button className="btn btn-danger mt-2" onClick={() => UnsubscribePremiumPlan(showdefault._id)}>
-                                                                        {t("Unsubscribe from Premium")}
-                                                                    </button>
-                                                                </>
-                                                            );
-                                                        } else {
-                                                            return (
-                                                                <>
-                                                                    <p className="mb-2">{t("No active subscription. Choose a plan below:")}</p>
-                                                                    <select
-                                                                        className="form-select w-auto d-inline-block me-2"
+                                                    <div className="d-flex justify-content-between align-items-center mb-4">
+                                                        <h6 className="main-content-label">
+                                                            {t("Subscription History")}
+                                                        </h6>
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="form-group mb-0 me-3">
+                                                                <div className="form-group mb-0 rangepicker_container filter_design">
+                                                                    <i className="fa fa-search calender_icon"></i>
+                                                                    <input
+                                                                        type="search"
+                                                                        className="form-control"
+                                                                        value={globalsearch}
+                                                                        placeholder={t("input_placeholder_search")}
                                                                         onChange={(e) => {
-                                                                            const newPlan = e.target.value;
-                                                                            if (!newPlan) return;
-                                                                            console.log("Selected plan:", newPlan);
-                                                                            SubscribePremiumPlan(showdefault._id, newPlan);
+                                                                            setGlobalSearch(e.target.value);
                                                                         }}
-                                                                        defaultValue=""
-                                                                    >
-                                                                        <option value="" disabled> {t("Select a plan")} </option>
-                                                                        <option value={SUBSCRIPTION_PRODUCT_IDS.ONE_MONTH_SUBSCRIPTION}>{t("Monthly")}</option>
-                                                                        <option value={SUBSCRIPTION_PRODUCT_IDS.THREE_MONTH_SUBSCRIPTION}>{t("Quarterly")}</option>
-                                                                        <option value={SUBSCRIPTION_PRODUCT_IDS.TWELVE_MONTH_SUBSCRIPTION}>{t("Yearly")}</option>
-                                                                    </select>
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="me-3">
+                                                                <CustomRangepicker
+                                                                    GetDateRange={(e) => {
+                                                                    prepareSearch("createdAt", e);
+                                                                    }}
+                                                                    resetdate={resetdate}
+                                                                />
+                                                            </div>
+                                                            
+                                                            <button
+                                                                type="reset"
+                                                                value="Reset"
+                                                                onClick={resetFilter}
+                                                                className="btn btn-warning float-right mr-2"
+                                                            >
+                                                                {t("btn_reset_filter")}
+                                                            </button>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div className="table-responsive">
+                                                    <table className="table table-bordered border-t0 key-buttons text-nowrap w-100">
+                                                        <thead>
+                                                            <tr>
+                                                                <th className="position-relative select_head">
+                                                                    <span>{t("list_heading_sno")}</span>
+                                                                </th>
+
+                                                                <th>
+                                                                    <div className="">
+                                                                        <span>{t("Plan")}</span>
+                                                                    </div>
+                                                                </th>
+
+                                                                <th className="position-relative select_head">
+                                                                    <span>{t("Plan Type")}</span>
+                                                                </th>      
+
+                                                                <th className="position-relative select_head">
+                                                                    <span>{t("Plan price")}</span>
+                                                                </th>
+
+                                                                <th className="position-relative select_head">
+                                                                    <span>{t("Balance Count")}</span>
+                                                                </th>
+
+                                                                <th className="position-relative select_head">
+                                                                    <span>{t("Customer")}</span>
+                                                                </th>
+
+                                                                <th className="position-relative select_head">
+                                                                <   span>{t("Transaction Id")}</span>
+                                                                </th>
+                                                                
+                                                                <th className="position-relative select_head">
+                                                                    <span>{t("Amount")}</span>
+                                                                </th>      
+
+                                                                <th className="position-relative select_head">
+                                                                    <span>{t("Coupon Code")}</span>
+                                                                </th>
+
+                                                                <th className="position-relative select_head">
+                                                                    <span>{t("Discount")}</span>
+                                                                </th>
+                                                                
+
+                                                                <th className="created_head">
+                                                                    <div className="sorting_column">
+                                                                        <span>{t("list_heading_created_date")}</span>
+                                                                       
+                                                                    </div>
+                                                                </th>
+
+                                                               
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {loader ? (
+                                                                <tr>
+                                                                <td colSpan={14}>
+                                                                    <Loader />
+                                                                </td>
+                                                                </tr>
+                                                            ) : (
+                                                                <>
+                                                                {subscriptionList.length ? (
+                                                                    subscriptionList.map((row, i) => {
+                                                                    return (
+                                                                        <tr
+                                                                        key={i}
+                                                                        >
+                                                                        <td>
+                                                                            {row ? ((page - 1) * itemperpage) + i + 1 : null}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row?.plan_name || 'N/A'}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row?.plan_type || "N/A"}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row?.plan_price || "N/A"}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row?.balance_count || "N/A"}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row?.user?.name || "N/A"}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row?.transaction?.transaction_id || "N/A"}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row?.transaction?.amount || "N/A"}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row?.coupon_history?.coupon_code || "N/A"}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row?.coupon_history?.discounted_amount || "N/A"}
+                                                                        </td>
+                                                                        <td>
+                                                                            {row.createdAt
+                                                                            ? formateDateWithMonth(row.createdAt)
+                                                                            : "N/A"}
+                                                                        </td>
+                                                                       
+                                                                        </tr>
+                                                                    );
+                                                                    })
+                                                                ) : (
+                                                                    <tr>
+                                                                    <td colSpan={14} className="text-center">
+                                                                        {t("msg_no_records")}
+                                                                    </td>
+                                                                    </tr>
+                                                                )}
                                                                 </>
-                                                            );
-                                                        }
-                                                    })()}
+                                                            )}
+                                                        </tbody>
+                                                    </table>
+                                                    </div>
+                                                    <div
+                                                    className=""
+                                                    id="example1_info"
+                                                    role="status"
+                                                    aria-live="polite"
+                                                    >
+                                                    <b>
+                                                        {t("msg_total_records")} : {datalength ? datalength : "0"}
+                                                    </b>
+                                                    </div>
+                                                    {datalength && datalength > 0 ? (
+                                                    <CustomPagination
+                                                        datalength={datalength}
+                                                        itemperpage={itemperpage}
+                                                        currentPage={page}
+                                                        setPage={setPage}
+                                                        pageRoute={[
+                                                        {
+                                                            name: "Psychic",
+                                                            path: `/admin/user-management/user/view/${params.id}`,
+                                                        },
+                                                        ]}
+                                                    />
+                                                    ) : (
+                                                    ""
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
-                                    )}
+                                        // <div className="">
+                                        //     <h5>{t("Subscription History")}</h5>
+                                        //     <table className="table table-bordered table-hover">
+                                        //         <thead>
+                                        //             <tr>
+                                        //                 <th>{t("Plan Type")}</th>
+                                        //                 <th>{t("Start Date")}</th>
+                                        //                 <th>{t("Expiry Date")}</th>
+                                        //                 <th>{t("Status")}</th>
+                                        //             </tr>
+                                        //         </thead>
+                                        //         <tbody>
+                                        //             {subscriptionList?.map((subscriptionPlan) => (
+                                        //                 <tr>
+                                        //                     <td>{SUBSCRIPTION_NAMES[subscriptionPlan?.plan_type]}</td>
+                                        //                     <td>{formateDateWithMonth(subscriptionPlan?.start_date)}</td>
+                                        //                     <td>{formateDateWithMonth(subscriptionPlan?.end_date)}</td>
+                                        //                     <td>{
+                                        //                             subscriptionPlan?.status == '1' 
+                                        //                             ? <span>ACTIVE</span> 
+                                        //                             : <span className="text-danger">INACTIVE</span> 
+                                        //                         }
+                                        //                     </td>
+                                        //                 </tr>
+                                        //             ))}
+                                        //         </tbody>
+                                        //     </table>
+                                        // </div>
+                                    )} */}
 
-                                    {/* subscription history section */}
-
-                                    {activeTab === "subscriptionHistory" && subscriptionList?.length > 0 && (
-                                        <div className="">
-                                            <h5>{t("Subscription History")}</h5>
-                                            <table className="table table-bordered table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{t("Plan Type")}</th>
-                                                        <th>{t("Start Date")}</th>
-                                                        <th>{t("Expiry Date")}</th>
-                                                        <th>{t("Status")}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {subscriptionList?.map((subscriptionPlan) => (
-                                                        <tr>
-                                                            <td>{SUBSCRIPTION_NAMES[subscriptionPlan?.plan_type]}</td>
-                                                            <td>{formateDateWithMonth(subscriptionPlan?.start_date)}</td>
-                                                            <td>{formateDateWithMonth(subscriptionPlan?.end_date)}</td>
-                                                            <td>{
-                                                                    subscriptionPlan?.status == '1' 
-                                                                    ? <span>ACTIVE</span> 
-                                                                    : <span className="text-danger">INACTIVE</span> 
-                                                                }
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}
-
-                                    {/* Questionnaire */}
-                                    {activeTab === "questionnaire" && showdefault?.question_set?.length > 0 && (
-                                        <div className="">
-                                            <h5>{t("Profile Questionnaire")}</h5>
-                                            <table className="table table-bordered table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{t("Question")}</th>
-                                                        <th>{t("Answer")}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {showdefault?.question_set?.map((questionAns, index) => {
-                                                        const matchedOptions = questionAns?.question?.option.filter((opt) => questionAns.option.includes(opt.option_slug));
-                                                        return (
-                                                            <tr key={index}>
-                                                                <td>{questionAns?.question?.question_title}</td>
-                                                                <td>
-                                                                    <ul style={{ margin: 0, paddingLeft: "20px" }}>
-                                                                        {matchedOptions?.map((opt, idx) => (
-                                                                            <li key={idx}>{opt.option_value}</li>
-                                                                        ))}
-                                                                    </ul>
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}
+                                   
                                 </div>
                             ) : (
                                 <Loader />
