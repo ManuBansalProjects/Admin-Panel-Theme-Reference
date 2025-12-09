@@ -425,7 +425,7 @@ const UserEdit = (props) => {
                     </span>
                   </div>
 
-                  {/* <div className="col-md-6 text-center form-group">
+                  <div className="col-md-6 text-center form-group">
                     <label htmlFor="address" className="text-left d-flex">
                       Place of Birth:
                       <span className="requirestar">*</span>{" "}
@@ -443,7 +443,7 @@ const UserEdit = (props) => {
                     <span className="text-danger d-flex text-left">
                       <CustomError shortCodes={[TEXTAREA_MAX_LENGTH]} name="place_of_birth" form={formik} />
                     </span>
-                  </div> */}
+                  </div>
 
                   {/* <div className="col-md-6 text-center form-group">
                     <label htmlFor="date_of_birth" className="text-left d-flex">
@@ -499,7 +499,7 @@ const UserEdit = (props) => {
                   </div>
                   */}
 
-                  <div className="col-md-6 text-center form-group">
+                  {/* <div className="col-md-6 text-center form-group">
                     <label htmlFor="place_of_birth" className="text-left d-flex">
                       Place of Birth:
                       <span className="requirestar">*</span>{' '}
@@ -519,7 +519,7 @@ const UserEdit = (props) => {
                     <span className="text-danger d-flex text-left">
                       <CustomError shortCodes={['TEXTAREA_MAX_LENGTH']} name="place_of_birth" form={formik} />
                     </span>
-                  </div> 
+                  </div>  */}
 
                   <div className="col-lg-6 text-center form-group">
                     <label htmlFor="restaurant_logo" className="text-left d-flex">
