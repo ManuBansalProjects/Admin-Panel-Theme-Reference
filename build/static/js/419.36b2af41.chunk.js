@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkreloaded_astrology=self.webpackChunkreloaded_astrology||[]).push([[419],{2419:(e,s,a)=>{a.r(s),a.d(s,{default:()=>l});const l={}}}]);
-//# sourceMappingURL=419.36b2af41.chunk.js.map
