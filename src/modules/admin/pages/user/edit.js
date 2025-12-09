@@ -73,7 +73,7 @@ const UserEdit = (props) => {
     state: Yup.string().trim().required("State is required"),
     country: Yup.string().trim().required("Country is required"),
     pin_code: Yup.string().trim().required("Pin Code is required"),
-    address: Yup.string().trim().max(TEXTAREA_MAX_LENGTH, t("validation_max_input_characters")).required(t("label_location_error")),
+    place_of_birth: Yup.string().trim().max(TEXTAREA_MAX_LENGTH, t("validation_max_input_characters")).required('Place of Birth is required'),
     // date_of_birth: Yup.string().trim().required("Date of Birth is required"),
     // time_of_birth: Yup.string().trim().required("Time of Birth is required"),
     // place_of_birth: Yup.string().max(TEXTAREA_MAX_LENGTH, DT(t("validation_max_input_characters"), [TEXTAREA_MAX_LENGTH])).required("Place of Birth is required"),
@@ -111,7 +111,7 @@ const UserEdit = (props) => {
       state: showdefault.state || '',
       country: showdefault.country || '',
       pin_code: showdefault.pin_code || '',
-      address: showdefault.address || '',
+      place_of_birth: showdefault.place_of_birth || '',
       // date_of_birth: showdefault && showdefault.date_of_birth ? showdefault.date_of_birth : "",
       // time_of_birth: showdefault && showdefault.time_of_birth ? showdefault.time_of_birth : "",
       // place_of_birth: showdefault && showdefault.place_of_birth ? showdefault.place_of_birth : "",
@@ -140,7 +140,7 @@ const UserEdit = (props) => {
       formData.append("state", values.state);
       formData.append("country", values.country);
       formData.append("pin_code", values.pin_code);
-      formData.append("address", values.address);
+      formData.append("place_of_birth", values.place_of_birth);
       formData.append("profile_image", values.profile_image);
       userEdit(formData)
         .then((response) => {
@@ -194,6 +194,7 @@ const UserEdit = (props) => {
           const latitude = place.geometry.location.lat();
           const longitude = place.geometry.location.lng();
 
+          console.log(place);
           formik.setFieldValue('place_of_birth', place.formatted_address);
           formik.setFieldValue('latitude', latitude);
           formik.setFieldValue('longitude', longitude);
@@ -331,6 +332,7 @@ const UserEdit = (props) => {
                         onBlur={formik.handleBlur}
                         value={formik.values.gender}
                         className="form-control" >
+                        <option key='' value=''>Select gender</option>
                         {(GENDER).map((gender, i) => {
                           return (
                             <option key={i} value={gender}>{t(`${gender}`)}</option>
@@ -423,25 +425,25 @@ const UserEdit = (props) => {
                     </span>
                   </div>
 
-                  <div className="col-md-6 text-center form-group">
+                  {/* <div className="col-md-6 text-center form-group">
                     <label htmlFor="address" className="text-left d-flex">
-                      {t("label_address")}:
+                      Place of Birth:
                       <span className="requirestar">*</span>{" "}
                     </label>
                     <input
-                      name="address"
-                      id="address"
+                      name="place_of_birth"
+                      id="place_of_birth"
                       type="text"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.address}
+                      value={formik.values.place_of_birth}
                       className="form-control"
-                      placeholder={t("placeholder_address")}
+                      placeholder="Enter Place of Birth"
                     />
                     <span className="text-danger d-flex text-left">
-                      <CustomError shortCodes={[TEXTAREA_MAX_LENGTH]} name="address" form={formik} />
+                      <CustomError shortCodes={[TEXTAREA_MAX_LENGTH]} name="place_of_birth" form={formik} />
                     </span>
-                  </div>
+                  </div> */}
 
                   {/* <div className="col-md-6 text-center form-group">
                     <label htmlFor="date_of_birth" className="text-left d-flex">
@@ -495,10 +497,11 @@ const UserEdit = (props) => {
                       <CustomError name="time_of_birth" form={formik} />
                     </span>
                   </div>
+                  */}
 
                   <div className="col-md-6 text-center form-group">
                     <label htmlFor="place_of_birth" className="text-left d-flex">
-                      {t('label_address')}:
+                      Place of Birth:
                       <span className="requirestar">*</span>{' '}
                     </label>
                     <input
@@ -516,11 +519,11 @@ const UserEdit = (props) => {
                     <span className="text-danger d-flex text-left">
                       <CustomError shortCodes={['TEXTAREA_MAX_LENGTH']} name="place_of_birth" form={formik} />
                     </span>
-                  </div> */}
+                  </div> 
 
                   <div className="col-lg-6 text-center form-group">
                     <label htmlFor="restaurant_logo" className="text-left d-flex">
-                      {t("label_logo")}:
+                      Profile Image:
                       {" "}
                       <Whisper
                         placement="top"

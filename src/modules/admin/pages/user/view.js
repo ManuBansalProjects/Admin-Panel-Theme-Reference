@@ -238,7 +238,7 @@ const UserView = (props) => {
                                                 <tbody>
                                                     {/* Profile Info Table (excluding subscription) */}
                                                     <tr>
-                                                        <th>{t("Image")}</th>
+                                                        <th>Profile Image</th>
                                                         <td>
                                                             <img src={showdefault?.profile_image || "N/A"} alt="profile" style={{ height: "100px" }} />
                                                         </td>
@@ -276,8 +276,8 @@ const UserView = (props) => {
                                                         <td className="text-capitalize">{showdefault?.pin_code || "N/A"}</td>
                                                     </tr>
                                                     <tr>
-                                                        <th>{t("Address")}</th>
-                                                        <td className="text-capitalize">{showdefault?.address || "N/A"}</td>
+                                                        <th>Place of Birth</th>
+                                                        <td className="text-capitalize">{showdefault?.place_of_birth || "N/A"}</td>
                                                     </tr>
                                                     {/* <tr>
                                                         <th>{t("Date of Birth")}</th>

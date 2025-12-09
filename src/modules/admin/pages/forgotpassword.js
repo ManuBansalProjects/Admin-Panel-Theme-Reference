@@ -167,7 +167,7 @@ const ForgotPwdPage = () => {
                                   {t("did_you_remembered_your_password")}?
                                 </p>
                                 <p className="mb-0">
-                                  {t("label_try_to")} <Link to="/admin/login">{t("link_login")}</Link>
+                                  <Link to="/admin/login">Please Login</Link>
                                 </p>
                               </div>
                             </div>

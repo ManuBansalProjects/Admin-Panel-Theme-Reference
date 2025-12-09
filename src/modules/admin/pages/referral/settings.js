@@ -85,7 +85,7 @@ const ReferralSettings = (props) => {
               error.earning_type = "Earning type is required"
             }
             if(!values?.earning){
-              error.earning = "Earning is required"
+              error.earning = "Referral Earning is required"
             }
             
             if(values?.earning_type == 'discount' && values?.earning > 50){

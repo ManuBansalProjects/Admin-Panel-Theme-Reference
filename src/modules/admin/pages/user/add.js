@@ -65,7 +65,7 @@ const UserAdd = (props) => {
     state: Yup.string().trim().required("State is required"),
     country: Yup.string().trim().required("Country is required"),
     pin_code: Yup.string().trim().required("Pin Code is required"),
-    address: Yup.string().trim().max(TEXTAREA_MAX_LENGTH, t("validation_max_input_characters")).required(t("label_location_error")),
+    place_of_birth: Yup.string().trim().max(TEXTAREA_MAX_LENGTH, t("validation_max_input_characters")).required("Place of Birth is required"),
     profile_image: Yup.mixed()
       .required(t('image_required_error'))
       .nullable()
@@ -100,7 +100,7 @@ const UserAdd = (props) => {
       state: "",
       country: "",
       pin_code: "",
-      address: "",
+      place_of_birth: "",
       profile_image: "",
     },
     validateOnBlur: false,
@@ -123,7 +123,7 @@ const UserAdd = (props) => {
       formData.append("state", values.state);
       formData.append("country", values.country);
       formData.append("pin_code", values.pin_code);
-      formData.append("address", values.address);
+      formData.append("place_of_birth", values.place_of_birth);
       formData.append("profile_image", values.profile_image);
 
       Add(formData)
@@ -150,6 +150,11 @@ const UserAdd = (props) => {
         })
         .catch((error) => {
           console.log("error ====> ", error);
+          Swal.fire({
+              icon: "error",
+              text: handleServerValidations(error),
+              ...SWAL_SETTINGS,
+            });
         });
     },
   });
@@ -263,6 +268,7 @@ const UserAdd = (props) => {
                         onBlur={formik.handleBlur}
                         value={formik.values.gender}
                         className="form-control" >
+                          <option key='' value=''>Select gender</option>
                         {(GENDER).map((gender, i) => {
                           return (
                             <option key={i} value={gender}>{t(`${gender}`)}</option>
@@ -448,28 +454,28 @@ const UserAdd = (props) => {
                   </div>
 
                   <div className="col-md-6 text-center form-group">
-                    <label htmlFor="address" className="text-left d-flex">
-                      {t("label_address")}:
+                    <label htmlFor="place_of_birth" className="text-left d-flex">
+                      Place of Birth:
                       <span className="requirestar">*</span>{" "}
                     </label>
                     <input
-                      name="address"
-                      id="address"
+                      name="place_of_birth"
+                      id="place_of_birth"
                       type="text"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.address}
+                      value={formik.values.place_of_birth}
                       className="form-control"
-                      placeholder={t("placeholder_address")}
+                      placeholder="Enter Place of Birth"
                     />
                     <span className="text-danger d-flex text-left">
-                      <CustomError shortCodes={[TEXTAREA_MAX_LENGTH]} name="address" form={formik} />
+                      <CustomError shortCodes={[TEXTAREA_MAX_LENGTH]} name="place_of_birth" form={formik} />
                     </span>
                   </div>
 
                   <div className="col-lg-6 text-center form-group">
                     <label htmlFor="profile_image" className="text-left d-flex">
-                      {t("label_logo")}:
+                      Profile Image:
                       {" "}
                       <Whisper
                         placement="top"
