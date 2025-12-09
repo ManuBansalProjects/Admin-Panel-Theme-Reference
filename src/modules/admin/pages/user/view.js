@@ -259,6 +259,22 @@ const UserView = (props) => {
                                                         <th>{t("Gender")}</th>
                                                         <td>{showdefault?.gender || "N/A"}</td>
                                                     </tr>
+
+                                                    <tr>
+                                                        <th>Date of Birth</th>
+                                                        <td className="text-capitalize">{showdefault?.date_of_birth ? formateDate(showdefault?.date_of_birth) : "N/A"}</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <th>Time of Birth</th>
+                                                        <td className="text-capitalize">{showdefault?.time_of_birth || "N/A"}</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <th>Place of Birth</th>
+                                                        <td className="text-capitalize">{showdefault?.place_of_birth || "N/A"}</td>
+                                                    </tr>
+
                                                     <tr>
                                                         <th>{t("Country")}</th>
                                                         <td className="text-capitalize">{showdefault?.country || "N/A"}</td>
@@ -271,14 +287,11 @@ const UserView = (props) => {
                                                         <th>{t("City")}</th>
                                                         <td className="text-capitalize">{showdefault?.city || "N/A"}</td>
                                                     </tr>
-                                                    <tr>
+                                                    {/* <tr>
                                                         <th>{t("Pin Code")}</th>
                                                         <td className="text-capitalize">{showdefault?.pin_code || "N/A"}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Place of Birth</th>
-                                                        <td className="text-capitalize">{showdefault?.place_of_birth || "N/A"}</td>
-                                                    </tr>
+                                                    </tr> */}
+                                                    
                                                     {/* <tr>
                                                         <th>{t("Date of Birth")}</th>
                                                         <td>{showdefault?.date_of_birth ? formateDate(showdefault.date_of_birth) : "N/A"}</td>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -18,14 +18,22 @@ import {
   DT,
   globalLoader,
   handleServerValidations,
+  convertTimezoneToOffset
 } from "../../../../utils/commonfunction";
 import * as Yup from "yup";
 import CustomError from "../../../../utils/customError";
 import { Add } from "../../services/user.service";
 import { cuisineOptions } from "../../../../utils/Constants";
-import { TagPicker, Tooltip, Whisper } from "rsuite";
+import { DatePicker, TagPicker, TimePicker, Tooltip, Whisper } from "rsuite";
 import PhoneInput from "../../../../utils/PhoneInput";
 import { EMAIL_VALIDATION, PHONE_VALIDATION } from "../../../../utils/commonValidations";
+import { useLoadScript } from '@react-google-maps/api';
+import { format } from "date-fns";
+
+const currentDate = new Date();
+currentDate.setHours(0, 0 , 0, 0);
+
+const LIBRARIES = ['places'];
 
 const UserAdd = (props) => {
   const navigate = useNavigate();
@@ -64,8 +72,9 @@ const UserAdd = (props) => {
     city: Yup.string().trim().required("City is required"),
     state: Yup.string().trim().required("State is required"),
     country: Yup.string().trim().required("Country is required"),
-    pin_code: Yup.string().trim().required("Pin Code is required"),
+    // pin_code: Yup.string().trim().required("Pin Code is required"),
     place_of_birth: Yup.string().trim().max(TEXTAREA_MAX_LENGTH, t("validation_max_input_characters")).required("Place of Birth is required"),
+    date_of_birth: Yup.date().required("Date of Birth is required"),
     profile_image: Yup.mixed()
       .required(t('image_required_error'))
       .nullable()
@@ -99,8 +108,10 @@ const UserAdd = (props) => {
       city: "",
       state: "",
       country: "",
-      pin_code: "",
+      // pin_code: "",
       place_of_birth: "",
+      date_of_birth: "",
+      time_of_birth: "",
       profile_image: "",
     },
     validateOnBlur: false,
@@ -122,8 +133,20 @@ const UserAdd = (props) => {
       formData.append("city", values.city);
       formData.append("state", values.state);
       formData.append("country", values.country);
-      formData.append("pin_code", values.pin_code);
+      // formData.append("pin_code", values.pin_code);
       formData.append("place_of_birth", values.place_of_birth);
+
+      formData.append("latitude", values.latitude);
+      formData.append("longitude", values.longitude);
+
+
+      const dateOfBirth = new Date(values.date_of_birth);
+      dateOfBirth.setHours(0, 0, 0, 0);
+      const dateOfBirthISO = dateOfBirth.toISOString();
+      formData.append("date_of_birth", dateOfBirthISO);
+
+      formData.append("time_of_birth", values.time_of_birth);
+
       formData.append("profile_image", values.profile_image);
 
       Add(formData)
@@ -158,6 +181,63 @@ const UserAdd = (props) => {
         });
     },
   });
+
+   const { isLoaded, loadError } = useLoadScript({
+      googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY, 
+      libraries: LIBRARIES, 
+    });
+  
+    const inputRef = useRef(null);
+  
+    useEffect(() => {
+      if (isLoaded && window.google && inputRef.current) {
+        const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
+          types: ['geocode'], // Restrict to address types
+        });
+  
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place && place.geometry) {
+            const latitude = place.geometry.location.lat();
+            const longitude = place.geometry.location.lng();
+  
+            console.log(place);
+            formik.setFieldValue('place_of_birth', place.formatted_address);
+            formik.setFieldValue('latitude', latitude);
+            formik.setFieldValue('longitude', longitude);
+            formik.setFieldValue('city', "");
+            formik.setFieldValue('state', "");
+            formik.setFieldValue('country', "");
+            // formik.setFieldValue('pin_code', "");
+  
+            // formik.setFieldValue('place_details', place);
+            const timestamp = new Date().getTime() / 1000; // Current time in Unix timestamp format
+            const timezoneUrl = `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=${timestamp}&key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}`;
+  
+            // Fetch the timezone information
+            fetch(timezoneUrl)
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.status === 'OK') {
+                  // Extract and set the timezone
+                  const timezoneId = data.timeZoneId;
+                  formik.setFieldValue('timezone', convertTimezoneToOffset(timezoneId));
+                  console.log('Timezone:', convertTimezoneToOffset(timezoneId));
+                  console.log('data time zone====---->:', data);
+                } else {
+                  console.error('Error fetching timezone:', data);
+                }
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+              });
+  
+          }
+        });
+      }
+    }, [isLoaded]);
+  
+    if (loadError) return <div>Failed to load Google Maps API</div>;
 
   return (
     <>
@@ -373,6 +453,78 @@ const UserAdd = (props) => {
                     </span>
                   </div> */}
 
+                   <div className="col-md-6 text-center form-group">
+                      <label htmlFor="date_of_birth" className="text-left d-flex">
+                        Date of Birth:
+                        <span className="requirestar">*</span>{" "}
+                      </label>
+                      <DatePicker
+                        oneTap={true}
+                        classPrefix="userInput"
+                        placeholder="Enter Date of Birth"
+                        placement="autoVertical"
+                        format="dd/MM/yyyy"
+                        cleanable={false}
+                        editable={false}
+                        name="date_of_birth"
+                        shouldDisableDate={(date) => date < currentDate}  // Disable past dates
+                        onChange={(date) => formik.setFieldValue("date_of_birth", date)}
+                        value={formik.values.date_of_birth}
+                        onBlur={formik.handleBlur}
+                        // caretAs={CustomBase64Caret}
+                      />
+                      <span className="text-danger d-flex text-left">
+                        <CustomError name="date_of_birth" form={formik} />
+                      </span>
+                  </div>  
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="time_of_birth" className="text-left d-flex">
+                      Time of Birth:
+                    </label>
+                    <TimePicker
+                    // container={() => document.getElementById('ManageAvailability')} // important!
+                      name='time_of_birth'
+                      value={
+                        formik.values?.time_of_birth
+                          ? new Date(`2024-01-01T${formik.values.time_of_birth}:00`)
+                          : null
+                      }
+                      onChange={(value) => {
+                        const formatted = value ? format(value, "HH:mm") : "";
+                        formik.setFieldValue("time_of_birth", formatted);
+                      }}
+                      onBlur={formik.handleBlur}
+                      format="HH:mm"
+                      placeholder="Enter Time of Birth"
+                      // hideMinutes={minute => minute % 60 !== 0}
+                      editable={false}
+                      showNow={false}
+                    />
+                  </div>
+
+                  <div className="col-md-6 text-center form-group">
+                    <label htmlFor="place_of_birth" className="text-left d-flex">
+                      Place of Birth:
+                      <span className="requirestar">*</span>{' '}
+                    </label>
+                    <input
+                      name="place_of_birth"
+                      id="place_of_birth"
+                      type="text"
+                      ref={inputRef}
+                      autoComplete="off"  
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.place_of_birth}
+                      className="form-control"
+                      placeholder={t('placeholder_address')}
+                    />
+                    <span className="text-danger d-flex text-left">
+                      <CustomError shortCodes={['TEXTAREA_MAX_LENGTH']} name="place_of_birth" form={formik} />
+                    </span>
+                  </div>
+
                   <div className="col-md-6 text-center form-group">
                     <label htmlFor="city" className="text-left d-flex">
                       {t("City")}:
@@ -387,6 +539,7 @@ const UserAdd = (props) => {
                       value={formik.values.city}
                       className="form-control"
                       placeholder={t("Enter city")}
+                      disabled={true}
                     />
                     <span className="text-danger d-flex text-left">
                       <CustomError name="city" form={formik} />
@@ -407,6 +560,7 @@ const UserAdd = (props) => {
                       value={formik.values.state}
                       className="form-control"
                       placeholder={t("Enter state")}
+                      disabled={true}
                     />
                     <span className="text-danger d-flex text-left">
                       <CustomError name="state" form={formik} />
@@ -427,13 +581,14 @@ const UserAdd = (props) => {
                       value={formik.values.country}
                       className="form-control"
                       placeholder={t("Enter country")}
+                      disabled={true}
                     />
                     <span className="text-danger d-flex text-left">
                       <CustomError name="country" form={formik} />
                     </span>
                   </div>
 
-                  <div className="col-md-6 text-center form-group">
+                  {/* <div className="col-md-6 text-center form-group">
                     <label htmlFor="pin_code" className="text-left d-flex">
                       {t("Pin code")}:
                       <span className="requirestar">*</span>{" "}
@@ -447,13 +602,14 @@ const UserAdd = (props) => {
                       value={formik.values.pin_code}
                       className="form-control"
                       placeholder={t("Enter pin code")}
+                      disabled={true}
                     />
                     <span className="text-danger d-flex text-left">
                       <CustomError name="pin_code" form={formik} />
                     </span>
-                  </div>
+                  </div> */}
 
-                  <div className="col-md-6 text-center form-group">
+                  {/* <div className="col-md-6 text-center form-group">
                     <label htmlFor="place_of_birth" className="text-left d-flex">
                       Place of Birth:
                       <span className="requirestar">*</span>{" "}
@@ -471,7 +627,9 @@ const UserAdd = (props) => {
                     <span className="text-danger d-flex text-left">
                       <CustomError shortCodes={[TEXTAREA_MAX_LENGTH]} name="place_of_birth" form={formik} />
                     </span>
-                  </div>
+                  </div> */}
+
+                   
 
                   <div className="col-lg-6 text-center form-group">
                     <label htmlFor="profile_image" className="text-left d-flex">
